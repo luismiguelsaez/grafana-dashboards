@@ -36,6 +36,34 @@ g.dashboard.new('GHA runners (test)')
 ])
 + g.dashboard.withPanels([
 
+  // Runners row
+  g.panel.row.new('Runners'),
+
+  // Runners status
+  g.panel.timeSeries.new('Runners status')
+  + g.panel.timeSeries.queryOptions.withTargets([
+    g.query.prometheus.new(
+      '${datasource}',
+      'gha_controller_running_ephemeral_runners{exported_namespace="gha-runner"}'
+    )
+    + g.query.prometheus.withLegendFormat('{{name}} (running)'),
+    g.query.prometheus.new(
+      '${datasource}',
+      'gha_controller_failed_ephemeral_runners{exported_namespace="gha-runner"}'
+    )
+    + g.query.prometheus.withLegendFormat('{{name}} (failed)'),
+    g.query.prometheus.new(
+      '${datasource}',
+      'gha_controller_pending_ephemeral_runners{exported_namespace="gha-runner"}'
+    )
+    + g.query.prometheus.withLegendFormat('{{name}} (pending)'),
+  ])
+  + g.panel.timeSeries.standardOptions.withUnit('')
+  + g.panel.timeSeries.gridPos.withW(24)
+  + g.panel.timeSeries.gridPos.withH(8)
+  + g.panel.timeSeries.gridPos.withX(0)
+  + g.panel.timeSeries.gridPos.withY(0),
+
   // Resources row
   g.panel.row.new('Runners resources'),
 
@@ -102,4 +130,23 @@ g.dashboard.new('GHA runners (test)')
   + g.panel.timeSeries.gridPos.withX(12)
   + g.panel.timeSeries.gridPos.withY(0),
 
+  // ENA Allowance Panel
+  g.panel.timeSeries.new('ENA Allowance')
+  + g.panel.timeSeries.queryOptions.withTargets([
+    g.query.prometheus.new(
+      '${datasource}',
+      'irate(node_ethtool_bw_in_allowance_exceeded{role="gha-runner-scale-set-main"}[5m])'
+    )
+    + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}} (in)'),
+    g.query.prometheus.new(
+      '${datasource}',
+      'irate(node_ethtool_bw_out_allowance_exceeded{role="gha-runner-scale-set-main"}[5m]) * -1'
+    )
+    + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}} (out)'),
+  ])
+  + g.panel.timeSeries.standardOptions.withUnit('')
+  + g.panel.timeSeries.gridPos.withW(12)
+  + g.panel.timeSeries.gridPos.withH(8)
+  + g.panel.timeSeries.gridPos.withX(0)
+  + g.panel.timeSeries.gridPos.withY(0),
 ])

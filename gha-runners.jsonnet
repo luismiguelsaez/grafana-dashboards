@@ -131,6 +131,21 @@ g.dashboard.new('GHA runners (test)')
   + g.panel.timeSeries.gridPos.withX(0)
   + g.panel.timeSeries.gridPos.withY(0),
 
+  // CPU Usage Panel
+  g.panel.timeSeries.new('CPU Usage')
+  + g.panel.timeSeries.queryOptions.withTargets([
+    g.query.prometheus.new(
+      '${datasource}',
+      'sum by (kubernetes_io_hostname) (irate(node_cpu_seconds_total{mode!="idle"}[15m])) / count (node_cpu_seconds_total) by (kubernetes_io_hostname)'
+    )
+    + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}}'),
+  ])
+  + g.panel.timeSeries.standardOptions.withUnit('percent')
+  + g.panel.timeSeries.gridPos.withW(12)
+  + g.panel.timeSeries.gridPos.withH(8)
+  + g.panel.timeSeries.gridPos.withX(12)
+  + g.panel.timeSeries.gridPos.withY(0),
+
   // Disk Usage Panel
   g.panel.timeSeries.new('Disk Usage')
   + g.panel.timeSeries.queryOptions.withTargets([
@@ -143,8 +158,8 @@ g.dashboard.new('GHA runners (test)')
   + g.panel.timeSeries.standardOptions.withUnit('percent')
   + g.panel.timeSeries.gridPos.withW(12)
   + g.panel.timeSeries.gridPos.withH(8)
-  + g.panel.timeSeries.gridPos.withX(12)
-  + g.panel.timeSeries.gridPos.withY(0),
+  + g.panel.timeSeries.gridPos.withX(0)
+  + g.panel.timeSeries.gridPos.withY(12),
 
   // ENA Allowance Panel
   g.panel.timeSeries.new('ENA Allowance')
@@ -163,6 +178,6 @@ g.dashboard.new('GHA runners (test)')
   + g.panel.timeSeries.standardOptions.withUnit('none')
   + g.panel.timeSeries.gridPos.withW(12)
   + g.panel.timeSeries.gridPos.withH(8)
-  + g.panel.timeSeries.gridPos.withX(0)
-  + g.panel.timeSeries.gridPos.withY(0),
+  + g.panel.timeSeries.gridPos.withX(8)
+  + g.panel.timeSeries.gridPos.withY(12),
 ])

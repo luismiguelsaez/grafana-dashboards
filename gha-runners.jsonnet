@@ -143,7 +143,7 @@ g.dashboard.new('GHA runners (test)')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'sum by (kubernetes_io_hostname) (irate(node_cpu_seconds_total{mode!="idle"}[15m])) / count (node_cpu_seconds_total) by (kubernetes_io_hostname)'
+        'sum by (kubernetes_io_hostname) (irate(node_cpu_seconds_total{mode!="idle",role="gha-runner-scale-set-main"}[15m])) / count (node_cpu_seconds_total{role="gha-runner-scale-set-main"}) by (kubernetes_io_hostname)'
       )
       + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}}'),
     ])

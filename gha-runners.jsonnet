@@ -18,6 +18,39 @@ g.dashboard.new('GHA runners (test)')
 ])
 + g.dashboard.withPanels([
 
+  // Stats row
+  g.panel.row.new('Stats'),
+
+  // Listeners count
+  g.panel.stat.new('Listeners count')
+  + g.panel.stat.queryOptions.withTargets([
+    g.query.prometheus.new(
+      '${datasource}',
+      'sum (gha_controller_running_listeners{exported_namespace="gha-runner"})'
+    )
+    + g.query.prometheus.withLegendFormat('{{organization}}'),
+  ])
+  + g.panel.timeSeries.standardOptions.withUnit('none')
+  + g.panel.timeSeries.gridPos.withW(4)
+  + g.panel.timeSeries.gridPos.withH(4)
+  + g.panel.timeSeries.gridPos.withX(0)
+  + g.panel.timeSeries.gridPos.withY(0),
+
+  // Runners count
+  g.panel.stat.new('Runners count')
+  + g.panel.stat.queryOptions.withTargets([
+    g.query.prometheus.new(
+      '${datasource}',
+      'sum (gha_controller_running_ephemeral_runners{exported_namespace="gha-runner"})'
+    )
+    + g.query.prometheus.withLegendFormat('{{organization}}'),
+  ])
+  + g.panel.timeSeries.standardOptions.withUnit('none')
+  + g.panel.timeSeries.gridPos.withW(4)
+  + g.panel.timeSeries.gridPos.withH(4)
+  + g.panel.timeSeries.gridPos.withX(4)
+  + g.panel.timeSeries.gridPos.withY(0),
+
   // Runners row
   g.panel.row.new('Runners'),
 
@@ -40,7 +73,7 @@ g.dashboard.new('GHA runners (test)')
     )
     + g.query.prometheus.withLegendFormat('{{name}} (pending)'),
   ])
-  + g.panel.timeSeries.standardOptions.withUnit('')
+  + g.panel.timeSeries.standardOptions.withUnit('none')
   + g.panel.timeSeries.gridPos.withW(24)
   + g.panel.timeSeries.gridPos.withH(8)
   + g.panel.timeSeries.gridPos.withX(0)
@@ -58,7 +91,8 @@ g.dashboard.new('GHA runners (test)')
     )
     + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
   ])
-  + g.panel.timeSeries.standardOptions.withUnit('')
+  // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/valueFormats/categories.ts#L37
+  + g.panel.timeSeries.standardOptions.withUnit('percentunit')
   + g.panel.timeSeries.gridPos.withW(12)
   + g.panel.timeSeries.gridPos.withH(8)
   + g.panel.timeSeries.gridPos.withX(0)
@@ -73,7 +107,7 @@ g.dashboard.new('GHA runners (test)')
     )
     + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
   ])
-  + g.panel.timeSeries.standardOptions.withUnit('')
+  + g.panel.timeSeries.standardOptions.withUnit('percentunit')
   + g.panel.timeSeries.gridPos.withW(12)
   + g.panel.timeSeries.gridPos.withH(8)
   + g.panel.timeSeries.gridPos.withX(12)
@@ -91,7 +125,7 @@ g.dashboard.new('GHA runners (test)')
     )
     + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}}'),
   ])
-  + g.panel.timeSeries.standardOptions.withUnit('')
+  + g.panel.timeSeries.standardOptions.withUnit('percent')
   + g.panel.timeSeries.gridPos.withW(12)
   + g.panel.timeSeries.gridPos.withH(8)
   + g.panel.timeSeries.gridPos.withX(0)
@@ -106,7 +140,7 @@ g.dashboard.new('GHA runners (test)')
     )
     + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}} ({{device}})'),
   ])
-  + g.panel.timeSeries.standardOptions.withUnit('')
+  + g.panel.timeSeries.standardOptions.withUnit('percent')
   + g.panel.timeSeries.gridPos.withW(12)
   + g.panel.timeSeries.gridPos.withH(8)
   + g.panel.timeSeries.gridPos.withX(12)
@@ -126,7 +160,7 @@ g.dashboard.new('GHA runners (test)')
     )
     + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}} (out)'),
   ])
-  + g.panel.timeSeries.standardOptions.withUnit('')
+  + g.panel.timeSeries.standardOptions.withUnit('none')
   + g.panel.timeSeries.gridPos.withW(12)
   + g.panel.timeSeries.gridPos.withH(8)
   + g.panel.timeSeries.gridPos.withX(0)

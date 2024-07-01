@@ -15,6 +15,7 @@ g.dashboard.new('Applications Gloo')
 + g.dashboard.withVariables([
   vars.datasource,
   vars.namespace,
+  vars.gloo_ext_cluster,
 ])
 + g.dashboard.withPanels([
 
@@ -27,7 +28,7 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'sum (irate(envoy_cluster_external_upstream_rq{}[1m])) by (envoy_cluster_name, envoy_response_code)'
+        'sum (irate(envoy_cluster_external_upstream_rq{envoy_cluster_name=~"$gloo_ext_cluster"}[1m])) by (envoy_cluster_name, envoy_response_code)'
       )
       + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}} ({{envoy_response_code}})'),
     ])
@@ -36,14 +37,18 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(0)
-    + g.panel.timeSeries.gridPos.withY(0),
+    + g.panel.timeSeries.gridPos.withY(0)
+    + g.panel.timeSeries.options.legend.withDisplayMode('table')
+    + g.panel.timeSeries.options.legend.withPlacement('right')
+    + g.panel.timeSeries.options.legend.withCalcs(['max', 'mean', 'min'])
+    + g.panel.timeSeries.options.legend.withSortBy(['max']),
 
     // Response Time Panel
     g.panel.timeSeries.new('Response Time')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'irate(envoy_cluster_external_upstream_rq_time_sum{}[1m]) / irate(envoy_cluster_external_upstream_rq_time_count{}[5m])'
+        'irate(envoy_cluster_external_upstream_rq_time_sum{envoy_cluster_name=~"$gloo_ext_cluster"}[1m]) / irate(envoy_cluster_external_upstream_rq_time_count{envoy_cluster_name=~"$gloo_ext_cluster"}[5m])'
       )
       + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}}'),
     ])
@@ -54,30 +59,29 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.gridPos.withY(0),
 
     // Response Time Buckets Panel
-    g.panel.timeSeries.new('Response Time buckets')
-    + g.panel.timeSeries.queryOptions.withTargets([
+    g.panel.heatmap.new('Response Time buckets')
+    + g.panel.heatmap.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'sum by (envoy_cluster_name, le) (irate(envoy_cluster_upstream_rq_time_bucket{}[1m]))'
+        'sum by (envoy_cluster_name, le) (irate(envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name=~"$gloo_ext_cluster"}[1m]))'
       )
       + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}} ({{le}})'),
     ])
-    + g.panel.timeSeries.standardOptions.withUnit('none')
-    + g.panel.timeSeries.gridPos.withW(12)
-    + g.panel.timeSeries.gridPos.withH(8)
-    + g.panel.timeSeries.gridPos.withX(0)
-    + g.panel.timeSeries.gridPos.withY(8)
-    + g.panel.timeSeries.options.legend.withDisplayMode('table')
-    + g.panel.timeSeries.options.legend.withPlacement('right')
-    + g.panel.timeSeries.options.legend.withCalcs(['max', 'mean', 'min'])
-    + g.panel.timeSeries.options.legend.withSortBy(['max']),
+    + g.panel.heatmap.standardOptions.withUnit('none')
+    + g.panel.heatmap.options.withCalculate(true)
+    + g.panel.heatmap.options.calculation.yBuckets.scale.withLog(2)
+    + g.panel.heatmap.options.calculation.yBuckets.scale.withType('log')
+    + g.panel.heatmap.gridPos.withW(12)
+    + g.panel.heatmap.gridPos.withH(8)
+    + g.panel.heatmap.gridPos.withX(0)
+    + g.panel.heatmap.gridPos.withY(8),
 
     // Request Timeout Panel
     g.panel.timeSeries.new('Request Timeout')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'sum by (envoy_cluster_name) (increase(envoy_cluster_upstream_rq_timeout{}[1m]))'
+        'sum by (envoy_cluster_name) (increase(envoy_cluster_upstream_rq_timeout{envoy_cluster_name=~"$gloo_ext_cluster"}[1m]))'
       )
       + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}}'),
     ])

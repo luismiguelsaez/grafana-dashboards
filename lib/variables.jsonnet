@@ -22,4 +22,15 @@ local var = g.dashboard.variable;
     + var.query.refresh.onLoad()
     + var.query.selectionOptions.withMulti()
     + var.query.selectionOptions.withIncludeAll(),
+
+  gloo_ext_cluster:
+    var.query.new('gloo_ext_cluster')
+    + var.query.withDatasourceFromVariable(self.datasource)
+    + var.query.queryTypes.withLabelValues(
+      'envoy_cluster_name',
+      metric='envoy_cluster_external_upstream_rq',
+    )
+    + var.query.refresh.onLoad()
+    + var.query.selectionOptions.withMulti()
+    + var.query.selectionOptions.withIncludeAll(),
 }

@@ -27,7 +27,7 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'sum (irate(envoy_cluster_external_upstream_rq{}[15m])) by (envoy_cluster_name, envoy_response_code)'
+        'sum (irate(envoy_cluster_external_upstream_rq{}[1m])) by (envoy_cluster_name, envoy_response_code)'
       )
       + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}} ({{envoy_response_code}})'),
     ])
@@ -43,7 +43,7 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'irate(envoy_cluster_external_upstream_rq_time_sum{}[15m]) / irate(envoy_cluster_external_upstream_rq_time_count{}[15m])'
+        'irate(envoy_cluster_external_upstream_rq_time_sum{}[1m]) / irate(envoy_cluster_external_upstream_rq_time_count{}[5m])'
       )
       + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}}'),
     ])
@@ -52,6 +52,40 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(12)
     + g.panel.timeSeries.gridPos.withY(0),
+
+    // Response Time Buckets Panel
+    g.panel.timeSeries.new('Response Time buckets')
+    + g.panel.timeSeries.queryOptions.withTargets([
+      g.query.prometheus.new(
+        '${datasource}',
+        'sum by (envoy_cluster_name, le) (irate(envoy_cluster_upstream_rq_time_bucket{}[1m]))'
+      )
+      + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}} ({{le}})'),
+    ])
+    + g.panel.timeSeries.standardOptions.withUnit('none')
+    + g.panel.timeSeries.gridPos.withW(12)
+    + g.panel.timeSeries.gridPos.withH(8)
+    + g.panel.timeSeries.gridPos.withX(0)
+    + g.panel.timeSeries.gridPos.withY(8)
+    + g.panel.timeSeries.options.legend.withDisplayMode('table')
+    + g.panel.timeSeries.options.legend.withPlacement('right')
+    + g.panel.timeSeries.options.legend.withCalcs(['max', 'mean', 'min'])
+    + g.panel.timeSeries.options.legend.withSortBy(['max']),
+
+    // Request Timeout Panel
+    g.panel.timeSeries.new('Request Timeout')
+    + g.panel.timeSeries.queryOptions.withTargets([
+      g.query.prometheus.new(
+        '${datasource}',
+        'sum by (envoy_cluster_name) (increase(envoy_cluster_upstream_rq_timeout{}[1m]))'
+      )
+      + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}}'),
+    ])
+    + g.panel.timeSeries.standardOptions.withUnit('none')
+    + g.panel.timeSeries.gridPos.withW(12)
+    + g.panel.timeSeries.gridPos.withH(8)
+    + g.panel.timeSeries.gridPos.withX(12)
+    + g.panel.timeSeries.gridPos.withY(8),
   ]),
 
   // Resources Row

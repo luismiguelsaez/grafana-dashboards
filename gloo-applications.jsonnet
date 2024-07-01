@@ -1,0 +1,94 @@
+// dashboard.jsonnet
+
+local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
+local var = g.dashboard.variable;
+
+local vars = import './lib/variables.jsonnet';
+
+// Dashboard
+g.dashboard.new('Applications Gloo')
++ g.dashboard.withDescription(|||
+  Dashboard to monitor the resources usage and status
+  of Kubernetes applications behind Gloo ingress
+|||)
++ g.dashboard.graphTooltip.withSharedCrosshair()
++ g.dashboard.withVariables([
+  vars.datasource,
+  vars.namespace,
+])
++ g.dashboard.withPanels([
+
+  // Ingress Gloo Row
+  g.panel.row.new('Ingress Gloo')
+  + g.panel.row.withCollapsed(true)
+  + g.panel.row.withPanels([
+    // Requests Panel
+    g.panel.timeSeries.new('Requests')
+    + g.panel.timeSeries.queryOptions.withTargets([
+      g.query.prometheus.new(
+        '${datasource}',
+        'sum (irate(envoy_cluster_external_upstream_rq{}[15m])) by (envoy_cluster_name, envoy_response_code)'
+      )
+      + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}} ({{envoy_response_code}})'),
+    ])
+    // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/valueFormats/categories.ts#L37
+    + g.panel.timeSeries.standardOptions.withUnit('none')
+    + g.panel.timeSeries.gridPos.withW(12)
+    + g.panel.timeSeries.gridPos.withH(8)
+    + g.panel.timeSeries.gridPos.withX(0)
+    + g.panel.timeSeries.gridPos.withY(0),
+
+    // Response Time Panel
+    g.panel.timeSeries.new('Response Time')
+    + g.panel.timeSeries.queryOptions.withTargets([
+      g.query.prometheus.new(
+        '${datasource}',
+        'irate(envoy_cluster_external_upstream_rq_time_sum{}[15m]) / irate(envoy_cluster_external_upstream_rq_time_count{}[15m])'
+      )
+      + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}}'),
+    ])
+    + g.panel.timeSeries.standardOptions.withUnit('ms')
+    + g.panel.timeSeries.gridPos.withW(12)
+    + g.panel.timeSeries.gridPos.withH(8)
+    + g.panel.timeSeries.gridPos.withX(12)
+    + g.panel.timeSeries.gridPos.withY(0),
+  ]),
+
+  // Resources Row
+  g.panel.row.new('Resources')
+  + g.panel.row.withCollapsed(true)
+  + g.panel.row.withPanels([
+    // Requests Panel
+    g.panel.timeSeries.new('CPU Usage')
+    + g.panel.timeSeries.queryOptions.withTargets([
+      g.query.prometheus.new(
+        '${datasource}',
+        'max by (container, pod) (rate(container_cpu_usage_seconds_total{namespace=~"$namespace", container!=""}[15m])) / on (container, pod) kube_pod_container_resource_limits{resource="cpu", namespace=~"$namespace", container!=""}'
+      )
+      + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
+    ])
+    // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/valueFormats/categories.ts#L37
+    + g.panel.timeSeries.standardOptions.withUnit('percentunit')
+    + g.panel.timeSeries.gridPos.withW(12)
+    + g.panel.timeSeries.gridPos.withH(8)
+    + g.panel.timeSeries.gridPos.withX(0)
+    + g.panel.timeSeries.gridPos.withY(0),
+
+    // Memory Usage Panel
+    g.panel.timeSeries.new('Memory Usage')
+    + g.panel.timeSeries.queryOptions.withTargets([
+      g.query.prometheus.new(
+        '${datasource}',
+        'max by (container, pod) (container_memory_usage_bytes{namespace=~"$namespace", container!=""}) / on (container, pod) kube_pod_container_resource_limits{resource="memory", namespace=~"$namespace", container!=""}'
+      )
+      + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
+    ])
+    + g.panel.timeSeries.standardOptions.withUnit('percentunit')
+    + g.panel.timeSeries.gridPos.withW(12)
+    + g.panel.timeSeries.gridPos.withH(8)
+    + g.panel.timeSeries.gridPos.withX(12)
+    + g.panel.timeSeries.gridPos.withY(0),
+  ]),
+
+  // Dashboard End
+])

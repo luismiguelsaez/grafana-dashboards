@@ -25,10 +25,7 @@ g.dashboard.new('GHA runners (test)')
     // Listeners count
     g.panel.stat.new('Listeners count')
     + g.panel.stat.queryOptions.withTargets([
-      g.query.prometheus.new(
-        '${datasource}',
-        'sum (gha_controller_running_listeners{exported_namespace="gha-runner"})'
-      )
+      g.query.prometheus.new('${datasource}', 'sum (gha_controller_running_listeners{exported_namespace="gha-runner"})')
       + g.query.prometheus.withLegendFormat('{{organization}}'),
     ])
     + g.panel.timeSeries.standardOptions.withUnit('none')

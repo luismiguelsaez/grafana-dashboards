@@ -102,7 +102,7 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'max by (container, pod) (rate(container_cpu_usage_seconds_total{namespace=~"$namespace", container!=""}[15m])) / on (container, pod) kube_pod_container_resource_limits{resource="cpu", namespace=~"$namespace", container!=""}'
+        'max by (container, pod) (rate(container_cpu_usage_seconds_total{namespace=~"$namespace", pod=~"$pod", container!=""}[15m])) / on (container, pod) kube_pod_container_resource_limits{resource="cpu", pod=~"$pod", namespace=~"$namespace", container!=""}'
       )
       + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
     ])
@@ -118,7 +118,7 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'max by (container, pod) (container_memory_usage_bytes{namespace=~"$namespace", container!=""}) / on (container, pod) kube_pod_container_resource_limits{resource="memory", namespace=~"$namespace", container!=""}'
+        'max by (container, pod) (container_memory_usage_bytes{namespace=~"$namespace", pod=~"$pod", container!=""}) / on (container, pod) kube_pod_container_resource_limits{resource="memory", namespace=~"$namespace", pod=~"$pod", container!=""}'
       )
       + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
     ])

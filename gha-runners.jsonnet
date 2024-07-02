@@ -114,6 +114,22 @@ g.dashboard.new('GHA runners (test)')
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(12)
     + g.panel.timeSeries.gridPos.withY(0),
+
+    // CPU Throttling Panel
+    g.panel.timeSeries.new('CPU Throttling')
+    + g.panel.timeSeries.queryOptions.withTargets([
+      g.query.prometheus.new(
+        '${datasource}',
+        'max by (container, pod) (irate(container_cpu_cfs_throttled_periods_total{namespace="gha-runner", container!=""}[5m])) / on (container, pod) max by (container, pod) ((irate(container_cpu_cfs_periods_total{namespace="gha-runner", container!=""}[5m])))'
+      )
+      + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
+    ])
+    // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/valueFormats/categories.ts#L37
+    + g.panel.timeSeries.standardOptions.withUnit('percentunit')
+    + g.panel.timeSeries.gridPos.withW(12)
+    + g.panel.timeSeries.gridPos.withH(8)
+    + g.panel.timeSeries.gridPos.withX(0)
+    + g.panel.timeSeries.gridPos.withY(8),
   ]),
 
   // Nodes row
@@ -184,6 +200,23 @@ g.dashboard.new('GHA runners (test)')
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(12)
     + g.panel.timeSeries.gridPos.withY(8),
+
+    // Nodes Details
+    g.panel.table.new('Nodes Details')
+    + g.panel.table.queryOptions.withTargets([
+      g.query.prometheus.new(
+        '${datasource}',
+        'node_cpu_seconds_total{karpenter_sh_registered!=""}'
+      )
+      + g.query.prometheus.withFormat('table')
+      + g.query.prometheus.withInstant(true),
+    ])
+    //+ g.panel.table.queryOptions.transformation.withFilter('none')
+    + g.panel.table.standardOptions.withUnit('none')
+    + g.panel.table.gridPos.withW(12)
+    + g.panel.table.gridPos.withH(8)
+    + g.panel.table.gridPos.withX(0)
+    + g.panel.table.gridPos.withY(16),
   ]),
   // Dashboard End
 ])

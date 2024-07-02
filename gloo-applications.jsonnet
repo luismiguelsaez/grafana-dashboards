@@ -15,6 +15,7 @@ g.dashboard.new('Applications Gloo')
 + g.dashboard.withVariables([
   vars.datasource,
   vars.namespace,
+  vars.pod,
   vars.gloo_ext_cluster,
 ])
 + g.dashboard.withPanels([

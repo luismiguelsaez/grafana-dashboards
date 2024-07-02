@@ -23,6 +23,18 @@ local var = g.dashboard.variable;
     + var.query.selectionOptions.withMulti()
     + var.query.selectionOptions.withIncludeAll(),
 
+  pod:
+    var.query.new('pod')
+    + var.query.withDatasourceFromVariable(self.datasource)
+    + var.query.queryTypes.withLabelValues(
+      'pod',
+      metric='kube_pod_info{namespace=~"$%s"}' % [self.namespace.name],
+    )
+    + var.query.withSort(i=0, type='alphabetical', asc=true)
+    + var.query.refresh.onLoad()
+    + var.query.selectionOptions.withMulti()
+    + var.query.selectionOptions.withIncludeAll(),
+
   gloo_ext_cluster:
     var.query.new('gloo_ext_cluster')
     + var.query.withDatasourceFromVariable(self.datasource)

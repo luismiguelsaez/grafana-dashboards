@@ -29,7 +29,7 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'sum (irate(envoy_cluster_external_upstream_rq{envoy_cluster_name=~"$gloo_ext_cluster"}[1m])) by (envoy_cluster_name, envoy_response_code)'
+        'sum (irate(envoy_cluster_external_upstream_rq{envoy_cluster_name=~"$gloo_ext_cluster"}[$__rate_interval])) by (envoy_cluster_name, envoy_response_code)'
       )
       + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}} ({{envoy_response_code}})'),
     ])
@@ -50,7 +50,7 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'irate(envoy_cluster_external_upstream_rq_time_sum{envoy_cluster_name=~"$gloo_ext_cluster"}[1m]) / irate(envoy_cluster_external_upstream_rq_time_count{envoy_cluster_name=~"$gloo_ext_cluster"}[5m])'
+        'irate(envoy_cluster_external_upstream_rq_time_sum{envoy_cluster_name=~"$gloo_ext_cluster"}[$__rate_interval]) / irate(envoy_cluster_external_upstream_rq_time_count{envoy_cluster_name=~"$gloo_ext_cluster"}[$__rate_interval])'
       )
       + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}}'),
     ])
@@ -66,7 +66,7 @@ g.dashboard.new('Applications Gloo')
     + g.panel.heatmap.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'sum by (envoy_cluster_name, le) (irate(envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name=~"$gloo_ext_cluster"}[1m]))'
+        'sum by (envoy_cluster_name, le) (irate(envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name=~"$gloo_ext_cluster"}[$__rate_interval]))'
       )
       + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}} ({{le}})'),
     ])
@@ -84,7 +84,7 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'sum by (envoy_cluster_name) (increase(envoy_cluster_upstream_rq_timeout{envoy_cluster_name=~"$gloo_ext_cluster"}[1m]))'
+        'sum by (envoy_cluster_name) (increase(envoy_cluster_upstream_rq_timeout{envoy_cluster_name=~"$gloo_ext_cluster"}[$__rate_interval]))'
       )
       + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}}'),
     ])
@@ -105,7 +105,7 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'max by (container, pod) (rate(container_cpu_usage_seconds_total{namespace=~"$namespace", pod=~"$pod", container!=""}[15m])) / on (container, pod) kube_pod_container_resource_limits{resource="cpu", pod=~"$pod", namespace=~"$namespace", container!=""}'
+        'max by (container, pod) (rate(container_cpu_usage_seconds_total{namespace=~"$namespace", pod=~"$pod", container!=""}[$__rate_interval])) / on (container, pod) kube_pod_container_resource_limits{resource="cpu", pod=~"$pod", namespace=~"$namespace", container!=""}'
       )
       + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
     ])

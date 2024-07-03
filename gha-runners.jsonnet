@@ -91,7 +91,7 @@ g.dashboard.new('GHA runners (test)')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'max by (container, pod) (irate(container_cpu_usage_seconds_total{namespace="gha-runner", container!=""}[5m])) / on (container, pod) kube_pod_container_resource_limits{resource="cpu", namespace="gha-runner"}'
+        'max by (container, pod) (irate(container_cpu_usage_seconds_total{namespace="gha-runner", container!=""}[$__rate_interval])) / on (container, pod) kube_pod_container_resource_limits{resource="cpu", namespace="gha-runner"}'
       )
       + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
     ])
@@ -124,7 +124,7 @@ g.dashboard.new('GHA runners (test)')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'max by (container, pod) (irate(container_cpu_cfs_throttled_periods_total{namespace="gha-runner", container!=""}[5m])) / on (container, pod) max by (container, pod) ((irate(container_cpu_cfs_periods_total{namespace="gha-runner", container!=""}[5m])))'
+        'max by (container, pod) (irate(container_cpu_cfs_throttled_periods_total{namespace="gha-runner", container!=""}[$__rate_interval])) / on (container, pod) max by (container, pod) ((irate(container_cpu_cfs_periods_total{namespace="gha-runner", container!=""}[5m])))'
       )
       + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
     ])
@@ -162,7 +162,7 @@ g.dashboard.new('GHA runners (test)')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'sum by (kubernetes_io_hostname) (irate(node_cpu_seconds_total{mode!="idle",role="gha-runner-scale-set-main"}[15m])) / count (node_cpu_seconds_total{role="gha-runner-scale-set-main"}) by (kubernetes_io_hostname)'
+        'sum by (kubernetes_io_hostname) (irate(node_cpu_seconds_total{mode!="idle",role="gha-runner-scale-set-main"}[$__rate_interval])) / count (node_cpu_seconds_total{role="gha-runner-scale-set-main"}) by (kubernetes_io_hostname)'
       )
       + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}}'),
     ])
@@ -194,12 +194,12 @@ g.dashboard.new('GHA runners (test)')
     + g.panel.timeSeries.queryOptions.withTargets([
       g.query.prometheus.new(
         '${datasource}',
-        'irate(node_ethtool_bw_in_allowance_exceeded{role="gha-runner-scale-set-main"}[5m])'
+        'irate(node_ethtool_bw_in_allowance_exceeded{role="gha-runner-scale-set-main"}[$__rate_interval])'
       )
       + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}} (in)'),
       g.query.prometheus.new(
         '${datasource}',
-        'irate(node_ethtool_bw_out_allowance_exceeded{role="gha-runner-scale-set-main"}[5m]) * -1'
+        'irate(node_ethtool_bw_out_allowance_exceeded{role="gha-runner-scale-set-main"}[$__rate_interval]) * -1'
       )
       + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}} (out)'),
     ])

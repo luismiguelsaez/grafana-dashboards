@@ -4,6 +4,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
 local var = g.dashboard.variable;
 
 local vars = import './lib/variables.jsonnet';
+local panels = import './lib/panels.jsonnet';
 
 // Dashboard
 g.dashboard.new('Applications Gloo')
@@ -62,20 +63,31 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.gridPos.withY(0),
 
     // Response Time Buckets Panel
-    g.panel.heatmap.new('Response Time buckets')
-    + g.panel.heatmap.queryOptions.withTargets([
-      g.query.prometheus.new(
+    // g.panel.heatmap.new('Response Time buckets')
+    // + g.panel.heatmap.queryOptions.withTargets([
+    //   g.query.prometheus.new(
+    //     '${datasource}',
+    //     'sum by (envoy_cluster_name, le) (irate(envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name=~"$gloo_ext_cluster"}[$__rate_interval]))'
+    //   )
+    //   + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}} ({{le}})'),
+    // ])
+    // + g.panel.heatmap.standardOptions.withUnit('none')
+    // + g.panel.heatmap.options.withCalculate(true)
+    // + g.panel.heatmap.options.calculation.yBuckets.scale.withLog(2)
+    // + g.panel.heatmap.options.calculation.yBuckets.scale.withType('log')
+    // + g.panel.heatmap.options.color.withScheme('RdYlGn')
+    // + g.panel.heatmap.options.yAxis.withUnit('s')
+    // + g.panel.heatmap.gridPos.withW(12)
+    // + g.panel.heatmap.gridPos.withH(8)
+    // + g.panel.heatmap.gridPos.withX(0)
+    // + g.panel.heatmap.gridPos.withY(8),
+    panels.heatmap.base(
+      'Response Time buckets',
+      [g.query.prometheus.new(
         '${datasource}',
         'sum by (envoy_cluster_name, le) (irate(envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name=~"$gloo_ext_cluster"}[$__rate_interval]))'
-      )
-      + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}} ({{le}})'),
-    ])
-    + g.panel.heatmap.standardOptions.withUnit('none')
-    + g.panel.heatmap.options.withCalculate(true)
-    + g.panel.heatmap.options.calculation.yBuckets.scale.withLog(2)
-    + g.panel.heatmap.options.calculation.yBuckets.scale.withType('log')
-    + g.panel.heatmap.options.color.withScheme('RdYlGn')
-    + g.panel.heatmap.options.yAxis.withUnit('s')
+      )]
+    )
     + g.panel.heatmap.gridPos.withW(12)
     + g.panel.heatmap.gridPos.withH(8)
     + g.panel.heatmap.gridPos.withX(0)

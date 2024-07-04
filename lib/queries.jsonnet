@@ -10,6 +10,29 @@ local prometheusQuery = g.query.prometheus;
     prometheusQuery.new(
       '$' + variables.datasource.name,
       |||
+        sum by (envoy_cluster_name) (
+          irate(
+            envoy_cluster_upstream_rq_time_sum{
+              envoy_cluster_name=~"$%s"
+            }
+            [$__rate_interval]
+          )
+          /
+          irate(
+            envoy_cluster_upstream_rq_time_count{
+              envoy_cluster_name=~"$%s"
+            }
+            [$__rate_interval]
+          )
+        )
+      ||| % [variables.gloo_ext_cluster.name, variables.gloo_ext_cluster.name]
+    )
+    + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}}'),
+
+  glooClusterRTBuckets:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
         sum by (envoy_cluster_name, le) (
           irate(
             envoy_cluster_upstream_rq_time_bucket{
@@ -19,7 +42,8 @@ local prometheusQuery = g.query.prometheus;
           )
         )
       ||| % [variables.gloo_ext_cluster.name]
-    ),
+    )
+    + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}} {{le}}'),
 
   glooClusterTimeouts:
     prometheusQuery.new(

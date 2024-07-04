@@ -27,25 +27,16 @@ g.dashboard.new('Applications Gloo')
   + g.panel.row.withCollapsed(true)
   + g.panel.row.withPanels([
     // Requests Panel
-    g.panel.timeSeries.new('Requests')
-    + g.panel.timeSeries.queryOptions.withTargets([
-      g.query.prometheus.new(
-        '${datasource}',
-        'sum (irate(envoy_cluster_external_upstream_rq{envoy_cluster_name=~"$gloo_ext_cluster"}[$__rate_interval])) by (envoy_cluster_name, envoy_response_code)'
-      )
-      + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}} ({{envoy_response_code}})'),
-    ])
-    // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/valueFormats/categories.ts#L37
-    + g.panel.timeSeries.standardOptions.withUnit('none')
-    + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
+    panels.timeSeries.tableLegend(
+      'Requests',
+      [
+        queries.glooClusterRequests,
+      ]
+    )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(0)
-    + g.panel.timeSeries.gridPos.withY(0)
-    + g.panel.timeSeries.options.legend.withDisplayMode('table')
-    + g.panel.timeSeries.options.legend.withPlacement('right')
-    + g.panel.timeSeries.options.legend.withCalcs(['max', 'mean', 'min'])
-    + g.panel.timeSeries.options.legend.withSortBy(['max']),
+    + g.panel.timeSeries.gridPos.withY(0),
 
     // Response Time Panel
     g.panel.timeSeries.new('Response Time')
@@ -76,16 +67,12 @@ g.dashboard.new('Applications Gloo')
     + g.panel.heatmap.gridPos.withY(8),
 
     // Request Timeout Panel
-    g.panel.timeSeries.new('Request Timeout')
-    + g.panel.timeSeries.queryOptions.withTargets([
-      g.query.prometheus.new(
-        '${datasource}',
-        'sum by (envoy_cluster_name) (increase(envoy_cluster_upstream_rq_timeout{envoy_cluster_name=~"$gloo_ext_cluster"}[$__rate_interval]))'
-      )
-      + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}}'),
-    ])
-    + g.panel.timeSeries.standardOptions.withUnit('none')
-    + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
+    panels.timeSeries.base(
+      'Request Timeout',
+      [
+        queries.glooClusterTimeouts,
+      ]
+    )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(12)

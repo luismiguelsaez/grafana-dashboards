@@ -21,6 +21,36 @@ local prometheusQuery = g.query.prometheus;
       ||| % [variables.gloo_ext_cluster.name]
     ),
 
+  glooClusterTimeouts:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum by (envoy_cluster_name) (
+          increase(
+            envoy_cluster_upstream_rq_timeout{
+              envoy_cluster_name=~"$%s"
+            }
+            [$__rate_interval]
+          )
+        )
+      ||| % [variables.gloo_ext_cluster.name]
+    ),
+
+  glooClusterRequests:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum by (envoy_cluster_name, envoy_response_code) (
+          irate(
+            envoy_cluster_external_upstream_rq{
+              envoy_cluster_name=~"$%s"
+            }
+            [$__rate_interval]
+          )
+        )
+      ||| % [variables.gloo_ext_cluster.name]
+    ),
+
   podCPUUsage:
     prometheusQuery.new(
       '$' + variables.datasource.name,

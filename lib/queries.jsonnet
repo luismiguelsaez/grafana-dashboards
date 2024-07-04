@@ -120,4 +120,32 @@ local prometheusQuery = g.query.prometheus;
       ||| % [variables.namespace.name, variables.pod.name, variables.namespace.name, variables.pod.name]
     )
     + prometheusQuery.withLegendFormat('{{container}} @ {{pod}}'),
+
+  nodeENABWAllowanceIN:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        irate(
+          node_ethtool_bw_in_allowance_exceeded{
+            role="gha-runner-scale-set-main"
+          }
+          [$__rate_interval]
+        )
+      |||
+    )
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (in)'),
+
+  nodeENABWAllowanceOUT:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        irate(
+          node_ethtool_bw_out_allowance_exceeded{
+            role="gha-runner-scale-set-main"
+          }
+          [$__rate_interval]
+        ) * -1
+      |||
+    )
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (out)'),
 }

@@ -4,6 +4,8 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
 local var = g.dashboard.variable;
 
 local vars = import './lib/variables.jsonnet';
+local panels = import './lib/panels.jsonnet';
+local queries = import './lib/queries.jsonnet';
 
 // Dashboard
 g.dashboard.new('GHA runners (test)')
@@ -190,21 +192,14 @@ g.dashboard.new('GHA runners (test)')
     + g.panel.timeSeries.gridPos.withY(12),
 
     // ENA Allowance Panel
-    g.panel.timeSeries.new('ENA Allowance')
-    + g.panel.timeSeries.queryOptions.withTargets([
-      g.query.prometheus.new(
-        '${datasource}',
-        'irate(node_ethtool_bw_in_allowance_exceeded{role="gha-runner-scale-set-main"}[$__rate_interval])'
-      )
-      + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}} (in)'),
-      g.query.prometheus.new(
-        '${datasource}',
-        'irate(node_ethtool_bw_out_allowance_exceeded{role="gha-runner-scale-set-main"}[$__rate_interval]) * -1'
-      )
-      + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}} (out)'),
-    ])
-    + g.panel.timeSeries.standardOptions.withUnit('none')
-    + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
+    panels.timeSeries.base(
+      'ENA Allowance',
+      [
+        queries.nodeENABWAllowanceIN,
+        queries.nodeENABWAllowanceOUT,
+      ],
+      'none'
+    )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(12)

@@ -40,16 +40,13 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.gridPos.withY(0),
 
     // Response Time Panel
-    g.panel.timeSeries.new('Response Time')
-    + g.panel.timeSeries.queryOptions.withTargets([
-      g.query.prometheus.new(
-        '${datasource}',
-        'irate(envoy_cluster_external_upstream_rq_time_sum{envoy_cluster_name=~"$gloo_ext_cluster"}[$__rate_interval]) / irate(envoy_cluster_external_upstream_rq_time_count{envoy_cluster_name=~"$gloo_ext_cluster"}[$__rate_interval])'
-      )
-      + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}}'),
-    ])
-    + g.panel.timeSeries.standardOptions.withUnit('ms')
-    + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
+    panels.timeSeries.base(
+      'Response Time',
+      [
+        queries.glooClusterRT,
+      ],
+      'ms'
+    )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(12)

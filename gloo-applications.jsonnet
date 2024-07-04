@@ -115,17 +115,23 @@ g.dashboard.new('Applications Gloo')
   + g.panel.row.withCollapsed(true)
   + g.panel.row.withPanels([
     // Requests Panel
-    g.panel.timeSeries.new('CPU Usage')
-    + g.panel.timeSeries.queryOptions.withTargets([
-      queries.podCPUUsage,
-      // g.query.prometheus.new(
-      //   '${datasource}',
-      //   'max by (container, pod) (rate(container_cpu_usage_seconds_total{namespace=~"$namespace", pod=~"$pod", container!=""}[$__rate_interval])) / on (container, pod) kube_pod_container_resource_limits{resource="cpu", pod=~"$pod", namespace=~"$namespace", container!=""}'
-      // )
-      // + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
-    ])
-    // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/valueFormats/categories.ts#L37
-    + g.panel.timeSeries.standardOptions.withUnit('percentunit')
+    // g.panel.timeSeries.new('CPU Usage')
+    // + g.panel.timeSeries.queryOptions.withTargets([
+    //   queries.podCPUUsage,
+    //   // g.query.prometheus.new(
+    //   //   '${datasource}',
+    //   //   'max by (container, pod) (rate(container_cpu_usage_seconds_total{namespace=~"$namespace", pod=~"$pod", container!=""}[$__rate_interval])) / on (container, pod) kube_pod_container_resource_limits{resource="cpu", pod=~"$pod", namespace=~"$namespace", container!=""}'
+    //   // )
+    //   // + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
+    // ])
+    // // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/valueFormats/categories.ts#L37
+    // + g.panel.timeSeries.standardOptions.withUnit('percentunit')
+    panels.timeSeries.base(
+      'CPU Usage',
+      [
+        queries.podCPUUsage,
+      ]
+    )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(0)

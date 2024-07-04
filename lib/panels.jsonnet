@@ -2,6 +2,9 @@
 
 local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonnet';
 
+// Documentation
+// Units: https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/valueFormats/categories.ts#L37
+
 {
   heatmap: {
     local heatmap = g.panel.heatmap,
@@ -16,5 +19,15 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
       + options.calculation.yBuckets.scale.withType('log')
       + options.color.withScheme('RdYlGn')
       + options.yAxis.withUnit('s'),
+  },
+
+  timeSeries: {
+    local timeSeries = g.panel.timeSeries,
+
+    base(title, targets):
+      timeSeries.new(title)
+      + timeSeries.queryOptions.withTargets(targets)
+      + timeSeries.standardOptions.withUnit('percentunit')
+      + timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth'),
   },
 }

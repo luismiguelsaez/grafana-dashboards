@@ -31,7 +31,8 @@ g.dashboard.new('Applications Gloo')
       'Requests',
       [
         queries.glooClusterRequests,
-      ]
+      ],
+      'none'
     )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
@@ -71,7 +72,8 @@ g.dashboard.new('Applications Gloo')
       'Request Timeout',
       [
         queries.glooClusterTimeouts,
-      ]
+      ],
+      'none'
     )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
@@ -87,7 +89,8 @@ g.dashboard.new('Applications Gloo')
       'CPU Usage',
       [
         queries.podCPUUsage,
-      ]
+      ],
+      'percentunit'
     )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
@@ -98,7 +101,8 @@ g.dashboard.new('Applications Gloo')
       'Memory Usage',
       [
         queries.podMemoryUsage,
-      ]
+      ],
+      'percentunit'
     )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)

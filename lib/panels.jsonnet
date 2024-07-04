@@ -24,14 +24,14 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
   timeSeries: {
     local timeSeries = g.panel.timeSeries,
 
-    base(title, targets):
+    base(title, targets, unit):
       timeSeries.new(title)
       + timeSeries.queryOptions.withTargets(targets)
-      + timeSeries.standardOptions.withUnit('percentunit')
+      + timeSeries.standardOptions.withUnit(unit)
       + timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth'),
 
-    tableLegend(title, targets):
-      self.base(title, targets)
+    tableLegend(title, targets, unit):
+      self.base(title, targets, unit)
       + g.panel.timeSeries.options.legend.withDisplayMode('table')
       + g.panel.timeSeries.options.legend.withPlacement('right')
       + g.panel.timeSeries.options.legend.withCalcs(['max', 'mean', 'min'])

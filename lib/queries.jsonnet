@@ -34,7 +34,8 @@ local prometheusQuery = g.query.prometheus;
           )
         )
       ||| % [variables.gloo_ext_cluster.name]
-    ),
+    )
+    + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}}'),
 
   glooClusterRequests:
     prometheusQuery.new(
@@ -49,7 +50,8 @@ local prometheusQuery = g.query.prometheus;
           )
         )
       ||| % [variables.gloo_ext_cluster.name]
-    ),
+    )
+    + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}}'),
 
   podCPUUsage:
     prometheusQuery.new(

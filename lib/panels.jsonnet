@@ -29,5 +29,12 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
       + timeSeries.queryOptions.withTargets(targets)
       + timeSeries.standardOptions.withUnit('percentunit')
       + timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth'),
+
+    tableLegend(title, targets):
+      self.base(title, targets)
+      + g.panel.timeSeries.options.legend.withDisplayMode('table')
+      + g.panel.timeSeries.options.legend.withPlacement('right')
+      + g.panel.timeSeries.options.legend.withCalcs(['max', 'mean', 'min'])
+      + g.panel.timeSeries.options.legend.withSortBy(['max']),
   },
 }

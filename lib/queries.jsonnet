@@ -43,4 +43,25 @@ local prometheusQuery = g.query.prometheus;
       ||| % [variables.namespace.name, variables.pod.name, variables.namespace.name, variables.pod.name]
     )
     + prometheusQuery.withLegendFormat('{{container}} @ {{pod}}'),
+
+  podMemoryUsage:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        max by (container, pod) (
+          container_memory_usage_bytes{
+              namespace=~"$%s",
+              pod=~"$%s",
+              container!=""
+          }
+        ) / on (container, pod)
+        kube_pod_container_resource_limits{
+          resource="memory",
+          namespace=~"$%s",
+          pod=~"$%s",
+          container!=""
+        }
+      ||| % [variables.namespace.name, variables.pod.name, variables.namespace.name, variables.pod.name]
+    )
+    + prometheusQuery.withLegendFormat('{{container}} @ {{pod}}'),
 }

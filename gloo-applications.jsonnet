@@ -64,24 +64,6 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.gridPos.withY(0),
 
     // Response Time Buckets Panel
-    // g.panel.heatmap.new('Response Time buckets')
-    // + g.panel.heatmap.queryOptions.withTargets([
-    //   g.query.prometheus.new(
-    //     '${datasource}',
-    //     'sum by (envoy_cluster_name, le) (irate(envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name=~"$gloo_ext_cluster"}[$__rate_interval]))'
-    //   )
-    //   + g.query.prometheus.withLegendFormat('{{envoy_cluster_name}} ({{le}})'),
-    // ])
-    // + g.panel.heatmap.standardOptions.withUnit('none')
-    // + g.panel.heatmap.options.withCalculate(true)
-    // + g.panel.heatmap.options.calculation.yBuckets.scale.withLog(2)
-    // + g.panel.heatmap.options.calculation.yBuckets.scale.withType('log')
-    // + g.panel.heatmap.options.color.withScheme('RdYlGn')
-    // + g.panel.heatmap.options.yAxis.withUnit('s')
-    // + g.panel.heatmap.gridPos.withW(12)
-    // + g.panel.heatmap.gridPos.withH(8)
-    // + g.panel.heatmap.gridPos.withX(0)
-    // + g.panel.heatmap.gridPos.withY(8),
     panels.heatmap.base(
       'Response Time buckets',
       [
@@ -114,18 +96,6 @@ g.dashboard.new('Applications Gloo')
   g.panel.row.new('Resources')
   + g.panel.row.withCollapsed(true)
   + g.panel.row.withPanels([
-    // Requests Panel
-    // g.panel.timeSeries.new('CPU Usage')
-    // + g.panel.timeSeries.queryOptions.withTargets([
-    //   queries.podCPUUsage,
-    //   // g.query.prometheus.new(
-    //   //   '${datasource}',
-    //   //   'max by (container, pod) (rate(container_cpu_usage_seconds_total{namespace=~"$namespace", pod=~"$pod", container!=""}[$__rate_interval])) / on (container, pod) kube_pod_container_resource_limits{resource="cpu", pod=~"$pod", namespace=~"$namespace", container!=""}'
-    //   // )
-    //   // + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
-    // ])
-    // // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/valueFormats/categories.ts#L37
-    // + g.panel.timeSeries.standardOptions.withUnit('percentunit')
     panels.timeSeries.base(
       'CPU Usage',
       [
@@ -137,17 +107,12 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.gridPos.withX(0)
     + g.panel.timeSeries.gridPos.withY(0),
 
-    // Memory Usage Panel
-    g.panel.timeSeries.new('Memory Usage')
-    + g.panel.timeSeries.queryOptions.withTargets([
-      g.query.prometheus.new(
-        '${datasource}',
-        'max by (container, pod) (container_memory_usage_bytes{namespace=~"$namespace", pod=~"$pod", container!=""}) / on (container, pod) kube_pod_container_resource_limits{resource="memory", namespace=~"$namespace", pod=~"$pod", container!=""}'
-      )
-      + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
-    ])
-    + g.panel.timeSeries.standardOptions.withUnit('percentunit')
-    + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
+    panels.timeSeries.base(
+      'Memory Usage',
+      [
+        queries.podMemoryUsage,
+      ]
+    )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(12)

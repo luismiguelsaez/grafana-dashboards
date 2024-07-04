@@ -5,6 +5,7 @@ local var = g.dashboard.variable;
 
 local vars = import './lib/variables.jsonnet';
 local panels = import './lib/panels.jsonnet';
+local queries = import './lib/queries.jsonnet';
 
 // Dashboard
 g.dashboard.new('Applications Gloo')
@@ -83,10 +84,9 @@ g.dashboard.new('Applications Gloo')
     // + g.panel.heatmap.gridPos.withY(8),
     panels.heatmap.base(
       'Response Time buckets',
-      [g.query.prometheus.new(
-        '${datasource}',
-        'sum by (envoy_cluster_name, le) (irate(envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name=~"$gloo_ext_cluster"}[$__rate_interval]))'
-      )]
+      [
+        queries.glooClusterRT,
+      ]
     )
     + g.panel.heatmap.gridPos.withW(12)
     + g.panel.heatmap.gridPos.withH(8)

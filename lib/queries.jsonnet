@@ -241,6 +241,22 @@ local prometheusQuery = g.query.prometheus;
     )
     + prometheusQuery.withLegendFormat('{{pod}} (TX)'),
 
+  podSockets:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum by (pod) (
+            (
+              container_sockets{
+                namespace=~"$%s",
+                pod=~"$%s"
+              }
+            )
+        )
+      ||| % [variables.namespace.name, variables.pod.name]
+    )
+    + prometheusQuery.withLegendFormat('{{pod}}'),
+
   nodeCPUUsage:
     prometheusQuery.new(
       '$' + variables.datasource.name,

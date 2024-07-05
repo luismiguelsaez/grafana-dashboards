@@ -131,6 +131,18 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(12)
     + g.panel.timeSeries.gridPos.withY(12),
+
+    panels.timeSeries.base(
+      'Sockets',
+      [
+        queries.podSockets,
+      ],
+      'none'
+    )
+    + g.panel.timeSeries.gridPos.withW(12)
+    + g.panel.timeSeries.gridPos.withH(8)
+    + g.panel.timeSeries.gridPos.withX(0)
+    + g.panel.timeSeries.gridPos.withY(24),
   ]),
 
   // Dashboard End

@@ -121,6 +121,65 @@ local prometheusQuery = g.query.prometheus;
     )
     + prometheusQuery.withLegendFormat('{{container}} @ {{pod}}'),
 
+  nodeCPUUsage:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum by (kubernetes_io_hostname) (
+          irate(
+            node_cpu_seconds_total{
+              mode!="idle",
+              role="gha-runner-scale-set-main"
+            }
+            [$__rate_interval]
+          )
+        )
+        /
+        count by (kubernetes_io_hostname) (
+          node_cpu_seconds_total{
+            role="gha-runner-scale-set-main"
+          }
+        )
+      |||
+    )
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} ({{device}})'),
+
+  nodeMemoryUsage:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        100 - (
+          node_memory_MemFree_bytes{
+            role="gha-runner-scale-set-main"
+          }
+          /
+          node_memory_MemTotal_bytes{
+            role="gha-runner-scale-set-main"
+          }
+        ) * 100
+      |||
+    )
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} ({{device}})'),
+
+  nodeDiskUsage:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        100 - (
+          node_filesystem_avail_bytes{
+            device!="shm",
+            role="gha-runner-scale-set-main"
+          }
+          /
+          node_filesystem_size_bytes{
+            device!="shm",
+            role="gha-runner-scale-set-main"
+          }
+        ) * 100
+      |||
+    )
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} ({{device}})'),
+
   nodeENABWAllowanceIN:
     prometheusQuery.new(
       '$' + variables.datasource.name,

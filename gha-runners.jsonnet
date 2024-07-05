@@ -17,6 +17,7 @@ g.dashboard.new('GHA runners (test)')
 + g.dashboard.withVariables([
   vars.datasource,
   vars.namespace,
+  vars.pod,
 ])
 + g.dashboard.withPanels([
 
@@ -89,33 +90,36 @@ g.dashboard.new('GHA runners (test)')
   + g.panel.row.withCollapsed(true)
   + g.panel.row.withPanels([
     // CPU Usage Panel
-    g.panel.timeSeries.new('CPU Usage')
-    + g.panel.timeSeries.queryOptions.withTargets([
-      g.query.prometheus.new(
-        '${datasource}',
-        'max by (container, pod) (irate(container_cpu_usage_seconds_total{namespace="gha-runner", container!=""}[$__rate_interval])) / on (container, pod) kube_pod_container_resource_limits{resource="cpu", namespace="gha-runner"}'
-      )
-      + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
-    ])
-    // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/valueFormats/categories.ts#L37
-    + g.panel.timeSeries.standardOptions.withUnit('percentunit')
-    + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
+    panels.timeSeries.base(
+      'CPU Usage',
+      [
+        queries.podCPUUsage,
+      ],
+      'percentunit'
+    )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(0)
     + g.panel.timeSeries.gridPos.withY(0),
 
     // Memory Usage Panel
-    g.panel.timeSeries.new('Memory Usage')
-    + g.panel.timeSeries.queryOptions.withTargets([
-      g.query.prometheus.new(
-        '${datasource}',
-        'max by (container, pod) (container_memory_working_set_bytes{namespace="gha-runner", container!=""}) / on (container, pod) kube_pod_container_resource_limits{resource="memory", namespace="gha-runner"}'
-      )
-      + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
-    ])
-    + g.panel.timeSeries.standardOptions.withUnit('percentunit')
-    + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
+    panels.timeSeries.base(
+      'Memory Usage',
+      [
+        queries.podMemoryUsage,
+      ],
+      'percentunit'
+    )
+    // g.panel.timeSeries.new('Memory Usage')
+    // + g.panel.timeSeries.queryOptions.withTargets([
+    //   g.query.prometheus.new(
+    //     '${datasource}',
+    //     'max by (container, pod) (container_memory_working_set_bytes{namespace="gha-runner", container!=""}) / on (container, pod) kube_pod_container_resource_limits{resource="memory", namespace="gha-runner"}'
+    //   )
+    //   + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
+    // ])
+    // + g.panel.timeSeries.standardOptions.withUnit('percentunit')
+    // + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(12)
@@ -144,48 +148,49 @@ g.dashboard.new('GHA runners (test)')
   + g.panel.row.withCollapsed(true)
   + g.panel.row.withPanels([
     // Memory Usage Panel
-    g.panel.timeSeries.new('Memory Usage')
-    + g.panel.timeSeries.queryOptions.withTargets([
-      g.query.prometheus.new(
-        '${datasource}',
-        '100 - (node_memory_MemFree_bytes{role="gha-runner-scale-set-main"} / node_memory_MemTotal_bytes{role="gha-runner-scale-set-main"}) * 100'
-      )
-      + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}}'),
-    ])
-    + g.panel.timeSeries.standardOptions.withUnit('percent')
-    + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
+    panels.timeSeries.base(
+      'Memory Usage',
+      [
+        queries.nodeMemoryUsage,
+      ],
+      'percent'
+    )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(0)
     + g.panel.timeSeries.gridPos.withY(0),
 
     // CPU Usage Panel
-    g.panel.timeSeries.new('CPU Usage')
-    + g.panel.timeSeries.queryOptions.withTargets([
-      g.query.prometheus.new(
-        '${datasource}',
-        'sum by (kubernetes_io_hostname) (irate(node_cpu_seconds_total{mode!="idle",role="gha-runner-scale-set-main"}[$__rate_interval])) / count (node_cpu_seconds_total{role="gha-runner-scale-set-main"}) by (kubernetes_io_hostname)'
-      )
-      + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}}'),
-    ])
-    + g.panel.timeSeries.standardOptions.withUnit('percent')
-    + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
+    panels.timeSeries.base(
+      'CPU Usage',
+      [
+        queries.nodeCPUUsage,
+      ],
+      'percentunit'
+    )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(12)
     + g.panel.timeSeries.gridPos.withY(0),
 
     // Disk Usage Panel
-    g.panel.timeSeries.new('Disk Usage')
-    + g.panel.timeSeries.queryOptions.withTargets([
-      g.query.prometheus.new(
-        '${datasource}',
-        '100 - (node_filesystem_avail_bytes{device!="shm", role="gha-runner-scale-set-main"} / node_filesystem_size_bytes{device!="shm", role="gha-runner-scale-set-main"}) * 100'
-      )
-      + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}} ({{device}})'),
-    ])
-    + g.panel.timeSeries.standardOptions.withUnit('percent')
-    + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
+    panels.timeSeries.base(
+      'Disk Usage',
+      [
+        queries.nodeDiskUsage,
+      ],
+      'percent'
+    )
+    // g.panel.timeSeries.new('Disk Usage')
+    // + g.panel.timeSeries.queryOptions.withTargets([
+    //   g.query.prometheus.new(
+    //     '${datasource}',
+    //     '100 - (node_filesystem_avail_bytes{device!="shm", role="gha-runner-scale-set-main"} / node_filesystem_size_bytes{device!="shm", role="gha-runner-scale-set-main"}) * 100'
+    //   )
+    //   + g.query.prometheus.withLegendFormat('{{kubernetes_io_hostname}} ({{device}})'),
+    // ])
+    // + g.panel.timeSeries.standardOptions.withUnit('percent')
+    // + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(0)

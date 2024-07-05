@@ -121,6 +121,126 @@ local prometheusQuery = g.query.prometheus;
     )
     + prometheusQuery.withLegendFormat('{{container}} @ {{pod}}'),
 
+  podFSWrite:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum by (pod,container) (
+          irate(
+            (
+              container_fs_writes_bytes_total{
+                namespace=~"$%s",
+                pod=~"$%s",
+                container!=""
+              }
+              [$__rate_interval]
+            )
+          )
+        ) * -1
+      ||| % [variables.namespace.name, variables.pod.name]
+    )
+    + prometheusQuery.withLegendFormat('{{container}} @ {{pod}} (Write)'),
+
+  podFSRead:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum by (pod, container) (
+          irate(
+            (
+              container_fs_reads_bytes_total{
+                namespace=~"$%s",
+                pod=~"$%s",
+                container!=""
+              }
+              [$__rate_interval]
+            )
+          )
+        )
+      ||| % [variables.namespace.name, variables.pod.name]
+    )
+    + prometheusQuery.withLegendFormat('{{container}} @ {{pod}} (Read)'),
+
+  podBlkIOWrite:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum by (pod, container, operation) (
+          irate(
+            (
+              container_blkio_device_usage_total{
+                namespace=~"$%s",
+                pod=~"$%s",
+                container!="",
+                operation=~"Write"
+              }
+              [$__rate_interval]
+            )
+          )
+        ) * -1
+      ||| % [variables.namespace.name, variables.pod.name]
+    )
+    + prometheusQuery.withLegendFormat('{{container}} @ {{pod}} (Write)'),
+
+  podBlkIORead:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum by (pod, container, operation) (
+          irate(
+            (
+              container_blkio_device_usage_total{
+                namespace=~"$%s",
+                pod=~"$%s",
+                container!="",
+                operation=~"Read"
+              }
+              [$__rate_interval]
+            )
+          )
+        )
+      ||| % [variables.namespace.name, variables.pod.name]
+    )
+    + prometheusQuery.withLegendFormat('{{pod}} @ {{container}} (Read)'),
+
+  podNetworkRX:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum by (pod) (
+          irate(
+            (
+              container_network_receive_bytes_total{
+                namespace=~"$%s",
+                pod=~"$%s"
+              }
+              [$__rate_interval]
+            )
+          )
+        )
+      ||| % [variables.namespace.name, variables.pod.name]
+    )
+    + prometheusQuery.withLegendFormat('{{pod}} (RX)'),
+
+  podNetworkTX:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum by (pod) (
+          irate(
+            (
+              container_network_transmit_bytes_total{
+                namespace=~"$%s",
+                pod=~"$%s"
+              }
+              [$__rate_interval]
+            )
+          )
+        ) * -1
+      ||| % [variables.namespace.name, variables.pod.name]
+    )
+    + prometheusQuery.withLegendFormat('{{pod}} (TX)'),
+
   nodeCPUUsage:
     prometheusQuery.new(
       '$' + variables.datasource.name,

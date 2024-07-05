@@ -105,6 +105,32 @@ g.dashboard.new('Applications Gloo')
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(12)
     + g.panel.timeSeries.gridPos.withY(0),
+
+    panels.timeSeries.base(
+      'Disk Usage',
+      [
+        queries.podFSRead,
+        queries.podFSWrite,
+      ],
+      'bytes'
+    )
+    + g.panel.timeSeries.gridPos.withW(12)
+    + g.panel.timeSeries.gridPos.withH(8)
+    + g.panel.timeSeries.gridPos.withX(0)
+    + g.panel.timeSeries.gridPos.withY(12),
+
+    panels.timeSeries.base(
+      'Network Usage',
+      [
+        queries.podNetworkRX,
+        queries.podNetworkTX,
+      ],
+      'bytes'
+    )
+    + g.panel.timeSeries.gridPos.withW(12)
+    + g.panel.timeSeries.gridPos.withH(8)
+    + g.panel.timeSeries.gridPos.withX(12)
+    + g.panel.timeSeries.gridPos.withY(12),
   ]),
 
   // Dashboard End

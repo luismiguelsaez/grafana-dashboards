@@ -40,7 +40,7 @@ local var = g.dashboard.variable;
     + var.query.withDatasourceFromVariable(self.datasource)
     + var.query.queryTypes.withLabelValues(
       'envoy_cluster_name',
-      metric='envoy_cluster_external_upstream_rq',
+      metric='envoy_cluster_external_upstream_rq{envoy_cluster_name!~"admin_port_cluster"}',
     )
     + var.query.refresh.onLoad()
     + var.query.selectionOptions.withMulti()

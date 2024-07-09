@@ -10,10 +10,10 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
     local heatmap = g.panel.heatmap,
     local options = heatmap.options,
 
-    base(title, targets):
+    base(title, targets, unit):
       heatmap.new(title)
       + heatmap.queryOptions.withTargets(targets)
-      + heatmap.standardOptions.withUnit('none')
+      + heatmap.standardOptions.withUnit(unit)
       + options.withCalculate(true)
       + options.calculation.yBuckets.scale.withLog(2)
       + options.calculation.yBuckets.scale.withType('log')

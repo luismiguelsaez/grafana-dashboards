@@ -57,7 +57,8 @@ g.dashboard.new('Applications Gloo')
       'Response Time buckets',
       [
         queries.glooClusterRT,
-      ]
+      ],
+      'ms'
     )
     + g.panel.heatmap.gridPos.withW(12)
     + g.panel.heatmap.gridPos.withH(8)

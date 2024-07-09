@@ -278,7 +278,7 @@ local prometheusQuery = g.query.prometheus;
         )
       |||
     )
-    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} ({{device}})'),
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}}'),
 
   nodeMemoryUsage:
     prometheusQuery.new(
@@ -295,7 +295,7 @@ local prometheusQuery = g.query.prometheus;
         ) * 100
       |||
     )
-    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} ({{device}})'),
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}}'),
 
   nodeDiskUsage:
     prometheusQuery.new(

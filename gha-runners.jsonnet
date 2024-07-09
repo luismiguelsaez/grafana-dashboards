@@ -110,16 +110,6 @@ g.dashboard.new('GHA runners (test)')
       ],
       'percentunit'
     )
-    // g.panel.timeSeries.new('Memory Usage')
-    // + g.panel.timeSeries.queryOptions.withTargets([
-    //   g.query.prometheus.new(
-    //     '${datasource}',
-    //     'max by (container, pod) (container_memory_working_set_bytes{namespace="gha-runner", container!=""}) / on (container, pod) kube_pod_container_resource_limits{resource="memory", namespace="gha-runner"}'
-    //   )
-    //   + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
-    // ])
-    // + g.panel.timeSeries.standardOptions.withUnit('percentunit')
-    // + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(12)

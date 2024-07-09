@@ -18,7 +18,7 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
       + options.calculation.yBuckets.scale.withLog(2)
       + options.calculation.yBuckets.scale.withType('log')
       + options.color.withScheme('RdYlGn')
-      + options.yAxis.withUnit('s'),
+      + options.yAxis.withUnit(unit),
   },
 
   timeSeries: {

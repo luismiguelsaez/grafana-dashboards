@@ -21,7 +21,7 @@ local var = g.dashboard.variable;
     )
     + var.query.refresh.onLoad()
     + var.query.selectionOptions.withMulti()
-    + var.query.selectionOptions.withIncludeAll(),
+    + var.query.selectionOptions.withIncludeAll(value=true, customAllValue='.*'),
 
   pod:
     var.query.new('pod')
@@ -33,7 +33,7 @@ local var = g.dashboard.variable;
     + var.query.withSort(i=0, type='alphabetical', asc=true)
     + var.query.refresh.onLoad()
     + var.query.selectionOptions.withMulti()
-    + var.query.selectionOptions.withIncludeAll(),
+    + var.query.selectionOptions.withIncludeAll(value=true, customAllValue='.*'),
 
   gloo_ext_cluster:
     var.query.new('gloo_ext_cluster')
@@ -44,5 +44,5 @@ local var = g.dashboard.variable;
     )
     + var.query.refresh.onLoad()
     + var.query.selectionOptions.withMulti()
-    + var.query.selectionOptions.withIncludeAll(),
+    + var.query.selectionOptions.withIncludeAll(value=true, customAllValue='.*'),
 }

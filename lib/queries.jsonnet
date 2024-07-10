@@ -278,7 +278,7 @@ local prometheusQuery = g.query.prometheus;
         )
       |||
     )
-    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}}'),
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} - {{role}}'),
 
   nodeMemoryUsage:
     prometheusQuery.new(
@@ -295,7 +295,7 @@ local prometheusQuery = g.query.prometheus;
         ) * 100
       |||
     )
-    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}}'),
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} - {{role}}'),
 
   nodeDiskUsage:
     prometheusQuery.new(
@@ -314,7 +314,7 @@ local prometheusQuery = g.query.prometheus;
         ) * 100
       |||
     )
-    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} ({{device}})'),
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} ({{device}}) - {{role}}'),
 
   nodeENABWAllowanceIN:
     prometheusQuery.new(
@@ -328,7 +328,7 @@ local prometheusQuery = g.query.prometheus;
         )
       |||
     )
-    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (in)'),
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (in) - {{role}}'),
 
   nodeENABWAllowanceOUT:
     prometheusQuery.new(
@@ -342,5 +342,5 @@ local prometheusQuery = g.query.prometheus;
         ) * -1
       |||
     )
-    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (out)'),
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (out) - {{role}}'),
 }

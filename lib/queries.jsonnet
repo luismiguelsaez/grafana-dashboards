@@ -265,7 +265,7 @@ local prometheusQuery = g.query.prometheus;
           irate(
             node_cpu_seconds_total{
               mode!="idle",
-              role="gha-runner-scale-set-main"
+              role=~"gha-runner-scale-set-.*"
             }
             [$__rate_interval]
           )
@@ -273,7 +273,7 @@ local prometheusQuery = g.query.prometheus;
         /
         count by (kubernetes_io_hostname) (
           node_cpu_seconds_total{
-            role="gha-runner-scale-set-main"
+            role=~"gha-runner-scale-set-.*"
           }
         )
       |||
@@ -286,11 +286,11 @@ local prometheusQuery = g.query.prometheus;
       |||
         100 - (
           node_memory_MemFree_bytes{
-            role="gha-runner-scale-set-main"
+            role=~"gha-runner-scale-set-.*"
           }
           /
           node_memory_MemTotal_bytes{
-            role="gha-runner-scale-set-main"
+            role=~"gha-runner-scale-set-.*"
           }
         ) * 100
       |||
@@ -304,12 +304,12 @@ local prometheusQuery = g.query.prometheus;
         100 - (
           node_filesystem_avail_bytes{
             device!="shm",
-            role="gha-runner-scale-set-main"
+            role=~"gha-runner-scale-set-.*"
           }
           /
           node_filesystem_size_bytes{
             device!="shm",
-            role="gha-runner-scale-set-main"
+            role=~"gha-runner-scale-set-.*"
           }
         ) * 100
       |||
@@ -322,7 +322,7 @@ local prometheusQuery = g.query.prometheus;
       |||
         irate(
           node_ethtool_bw_in_allowance_exceeded{
-            role="gha-runner-scale-set-main"
+            role=~"gha-runner-scale-set-.*"
           }
           [$__rate_interval]
         )
@@ -336,7 +336,7 @@ local prometheusQuery = g.query.prometheus;
       |||
         irate(
           node_ethtool_bw_out_allowance_exceeded{
-            role="gha-runner-scale-set-main"
+            role=~"gha-runner-scale-set-.*"
           }
           [$__rate_interval]
         ) * -1

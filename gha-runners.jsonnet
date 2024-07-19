@@ -8,7 +8,7 @@ local panels = import './lib/panels.jsonnet';
 local queries = import './lib/queries.jsonnet';
 
 // Dashboard
-g.dashboard.new('GHA runners (test)')
+g.dashboard.new('GHA runners')
 + g.dashboard.withDescription(|||
   Dashboard to monitor the resources usage and status
   of Github Actions Scale Set Runners
@@ -116,17 +116,13 @@ g.dashboard.new('GHA runners (test)')
     + g.panel.timeSeries.gridPos.withY(0),
 
     // CPU Throttling Panel
-    g.panel.timeSeries.new('CPU Throttling')
-    + g.panel.timeSeries.queryOptions.withTargets([
-      g.query.prometheus.new(
-        '${datasource}',
-        'max by (container, pod) (irate(container_cpu_cfs_throttled_periods_total{namespace="gha-runner", container!=""}[$__rate_interval])) / on (container, pod) max by (container, pod) ((irate(container_cpu_cfs_periods_total{namespace="gha-runner", container!=""}[5m])))'
-      )
-      + g.query.prometheus.withLegendFormat('{{container}} @ {{pod}}'),
-    ])
-    // https://github.com/grafana/grafana/blob/main/packages/grafana-data/src/valueFormats/categories.ts#L37
-    + g.panel.timeSeries.standardOptions.withUnit('percentunit')
-    + g.panel.timeSeries.fieldConfig.defaults.custom.withLineInterpolation('smooth')
+    panels.timeSeries.base(
+      'CPU Trottling',
+      [
+        queries.podCPUUsage,
+      ],
+      'percentunit'
+    )
     + g.panel.timeSeries.gridPos.withW(12)
     + g.panel.timeSeries.gridPos.withH(8)
     + g.panel.timeSeries.gridPos.withX(0)
@@ -214,7 +210,7 @@ g.dashboard.new('GHA runners (test)')
     + g.panel.table.standardOptions.withUnit('none')
     + g.panel.table.queryOptions.transformation.withDisabled(false)
     + g.panel.table.queryOptions.transformation.withId('filterFieldsByName')
-    + g.panel.table.queryOptions.transformation.withOptions({ options: { include: { names: ['karpenter_k8s_aws_instance_cpu'] } } })
+    + g.panel.table.queryOptions.transformation.withOptions({ include: { names: ['karpenter_k8s_aws_instance_cpu'] } })
     + g.panel.table.gridPos.withW(12)
     + g.panel.table.gridPos.withH(8)
     + g.panel.table.gridPos.withX(0)

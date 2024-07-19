@@ -100,6 +100,31 @@ local prometheusQuery = g.query.prometheus;
     )
     + prometheusQuery.withLegendFormat('{{container}} @ {{pod}}'),
 
+  podCPUThrottling:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        max by (container, pod) (
+          irate(
+            container_cpu_cfs_throttled_periods_total{
+              namespace=~"$%s",
+              pod=~"$%s",
+              container!=""
+            }
+            [$__rate_interval])
+          ) / on (container, pod)
+          irate(
+            container_cpu_cfs_periods_total{
+              namespace=~"$%s",
+              pod=~"$%s",
+              container!=""
+            }
+            [$__rate_interval])
+          )
+      ||| % [variables.namespace.name, variables.pod.name, variables.namespace.name, variables.pod.name]
+    )
+    + prometheusQuery.withLegendFormat('{{container}} @ {{pod}}'),
+
   podMemoryUsage:
     prometheusQuery.new(
       '$' + variables.datasource.name,

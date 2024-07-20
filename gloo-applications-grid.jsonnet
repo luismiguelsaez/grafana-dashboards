@@ -26,18 +26,18 @@ g.dashboard.new('GHA runners grid')
   utilGrid.makeGrid(
     panels=[
 
-      g.panel.row.new('Runners resources'),
+      g.panel.row.new('Requests'),
+      panels.timeSeries.tableLegend('Requests', [queries.glooClusterRequests], 'none'),
+      panels.timeSeries.base('Response Time', [queries.glooClusterRT], 'ms'),
+      panels.heatmap.base('Response Time buckets', [queries.glooClusterRT], 'ms'),
+      panels.timeSeries.base('Requests Timeout', [queries.glooClusterTimeouts], 'none'),
+
+      g.panel.row.new('Resources'),
       panels.timeSeries.base('CPU Usage', [queries.podCPUUsage], 'percentunit'),
       panels.timeSeries.base('Memory Usage', [queries.podMemoryUsage], 'percentunit'),
-      panels.timeSeries.base('CPU Trottling', [queries.podCPUThrottling], 'percentunit'),
+      panels.timeSeries.base('Disk Usage', [queries.podFSRead, queries.podFSWrite], 'bytes'),
       panels.timeSeries.base('Network Usage', [queries.podNetworkRX, queries.podNetworkTX], 'bytes'),
-
-      g.panel.row.new('Nodes resources'),
-      panels.timeSeries.base('CPU Usage', [queries.nodeCPUUsage], 'percentunit'),
-      panels.timeSeries.base('Memory Usage', [queries.nodeMemoryUsage], 'percentunit'),
-      panels.timeSeries.base('Disk Usage', [queries.nodeDiskUsage], 'percent'),
-      panels.timeSeries.base('Network Usage', [queries.nodeNetworkRX, queries.nodeNetworkTX], 'bytes'),
-      panels.timeSeries.base('ENA BW Allowance', [queries.nodeENABWAllowanceOUT, queries.nodeENABWAllowanceIN], 'none'),
+      panels.timeSeries.base('Opened Sockets', [queries.podSockets], 'none'),
 
     ],
     panelWidth=12,

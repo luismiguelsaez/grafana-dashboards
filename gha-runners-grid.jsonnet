@@ -15,29 +15,22 @@ g.dashboard.new('GHA runners grid')
   of Github Actions Scale Set Runners
 |||)
 + g.dashboard.graphTooltip.withSharedCrosshair()
+// Set dashboard variables
 + g.dashboard.withVariables([
   vars.datasource,
   vars.namespace,
   vars.pod,
 ])
 + g.dashboard.withPanels(
-  // Row pods resources
-  [g.panel.row.new('Runners resources')]
-  + utilGrid.makeGrid(
+  // Create panels grid
+  utilGrid.makeGrid(
     panels=[
+      g.panel.row.new('Runners resources'),
       panels.timeSeries.base('CPU Usage', [queries.podCPUUsage], 'percentunit'),
       panels.timeSeries.base('Memory Usage', [queries.podMemoryUsage], 'percentunit'),
       panels.timeSeries.base('CPU Trottling', [queries.podCPUThrottling], 'percentunit'),
       panels.timeSeries.base('Network Usage', [queries.podNetworkRX, queries.podNetworkTX], 'bytes'),
-    ],
-    panelWidth=12,
-    panelHeight=8,
-    startY=0
-  )
-  // Row nodes resources
-  + [g.panel.row.new('Nodes resources')]
-  + utilGrid.makeGrid(
-    panels=[
+      g.panel.row.new('Nodes resources'),
       panels.timeSeries.base('CPU Usage', [queries.nodeCPUUsage], 'percentunit'),
       panels.timeSeries.base('Memory Usage', [queries.nodeMemoryUsage], 'percentunit'),
       panels.timeSeries.base('Disk Usage', [queries.nodeDiskUsage], 'percent'),
@@ -47,5 +40,5 @@ g.dashboard.new('GHA runners grid')
     panelWidth=12,
     panelHeight=8,
     startY=0
-  ),
+  )
 )

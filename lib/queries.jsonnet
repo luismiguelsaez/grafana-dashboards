@@ -104,23 +104,22 @@ local prometheusQuery = g.query.prometheus;
     prometheusQuery.new(
       '$' + variables.datasource.name,
       |||
-        max by (container, pod) (
-          irate(
-            container_cpu_cfs_throttled_periods_total{
-              namespace=~"$%s",
-              pod=~"$%s",
-              container!=""
-            }
-            [$__rate_interval])
-          ) / on (container, pod)
-          irate(
-            container_cpu_cfs_periods_total{
-              namespace=~"$%s",
-              pod=~"$%s",
-              container!=""
-            }
-            [$__rate_interval])
-          )
+        irate(
+          container_cpu_cfs_throttled_periods_total{
+            namespace=~"$%s",
+            pod=~"$%s",
+            container!=""
+          }
+          [$__rate_interval]
+        ) / on (container, pod)
+        irate(
+          container_cpu_cfs_periods_total{
+            namespace=~"$%s",
+            pod=~"$%s",
+            container!=""
+          }
+          [$__rate_interval]
+        )
       ||| % [variables.namespace.name, variables.pod.name, variables.namespace.name, variables.pod.name]
     )
     + prometheusQuery.withLegendFormat('{{container}} @ {{pod}}'),
@@ -355,6 +354,20 @@ local prometheusQuery = g.query.prometheus;
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (in) - {{role}}'),
 
+  nodeENABWAllowanceOUT:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        irate(
+          node_ethtool_bw_out_allowance_exceeded{
+            role=~"gha-runner-scale-set-.*"
+          }
+          [$__rate_interval]
+        ) * -1
+      |||
+    )
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (out) - {{role}}'),
+
   nodeNetworkRX:
     prometheusQuery.new(
       '$' + variables.datasource.name,
@@ -382,18 +395,4 @@ local prometheusQuery = g.query.prometheus;
       |||
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (TX) - {{role}}'),
-
-  nodeENABWAllowanceOUT:
-    prometheusQuery.new(
-      '$' + variables.datasource.name,
-      |||
-        irate(
-          node_ethtool_bw_out_allowance_exceeded{
-            role=~"gha-runner-scale-set-.*"
-          }
-          [$__rate_interval]
-        ) * -1
-      |||
-    )
-    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (out) - {{role}}'),
 }

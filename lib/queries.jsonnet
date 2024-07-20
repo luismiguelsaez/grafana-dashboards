@@ -355,6 +355,34 @@ local prometheusQuery = g.query.prometheus;
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (in) - {{role}}'),
 
+  nodeNetworkRX:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        irate(
+          node_network_receive_bytes_total{
+            role=~"gha-runner-scale-set-.*"
+          }
+          [$__rate_interval]
+        )
+      |||
+    )
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (RX) - {{role}}'),
+
+  nodeNetworkTX:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        irate(
+          node_network_transmit_bytes_total{
+            role=~"gha-runner-scale-set-.*"
+          }
+          [$__rate_interval]
+        ) * -1
+      |||
+    )
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (TX) - {{role}}'),
+
   nodeENABWAllowanceOUT:
     prometheusQuery.new(
       '$' + variables.datasource.name,

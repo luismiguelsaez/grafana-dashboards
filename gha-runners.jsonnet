@@ -196,6 +196,20 @@ g.dashboard.new('GHA runners')
     + g.panel.timeSeries.gridPos.withX(12)
     + g.panel.timeSeries.gridPos.withY(8),
 
+    // Nodes network usage
+    panels.timeSeries.base(
+      'Network Usage',
+      [
+        queries.nodeNetworkRX,
+        queries.nodeNetworkTX,
+      ],
+      'bytes'
+    )
+    + g.panel.table.gridPos.withW(12)
+    + g.panel.table.gridPos.withH(8)
+    + g.panel.table.gridPos.withX(0)
+    + g.panel.table.gridPos.withY(16),
+
     // Nodes Details
     g.panel.table.new('Nodes Details')
     + g.panel.table.queryOptions.withTargets([
@@ -213,7 +227,7 @@ g.dashboard.new('GHA runners')
     + g.panel.table.queryOptions.transformation.withOptions({ include: { names: ['karpenter_k8s_aws_instance_cpu'] } })
     + g.panel.table.gridPos.withW(12)
     + g.panel.table.gridPos.withH(8)
-    + g.panel.table.gridPos.withX(0)
+    + g.panel.table.gridPos.withX(12)
     + g.panel.table.gridPos.withY(16),
   ]),
   // Dashboard End

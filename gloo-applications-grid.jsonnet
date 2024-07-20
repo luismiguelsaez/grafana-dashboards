@@ -9,17 +9,17 @@ local panels = import './lib/panels.jsonnet';
 local queries = import './lib/queries.jsonnet';
 
 // Dashboard
-g.dashboard.new('GHA runners grid')
+g.dashboard.new('Gloo Applications')
 + g.dashboard.withDescription(|||
   Dashboard to monitor the resources usage and status
-  of Github Actions Scale Set Runners
+  of Kubernetes applications behind Gloo ingress
 |||)
 + g.dashboard.graphTooltip.withSharedCrosshair()
-// Set dashboard variables
 + g.dashboard.withVariables([
   vars.datasource,
   vars.namespace,
   vars.pod,
+  vars.gloo_ext_cluster,
 ])
 + g.dashboard.withPanels(
   // Create panels grid

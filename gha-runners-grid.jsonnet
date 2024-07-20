@@ -20,6 +20,7 @@ g.dashboard.new('GHA runners grid')
   vars.datasource,
   vars.namespace,
   vars.pod,
+  vars.node_role,
 ])
 + g.dashboard.withPanels(
   // Create panels grid

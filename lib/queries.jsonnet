@@ -289,7 +289,7 @@ local prometheusQuery = g.query.prometheus;
           irate(
             node_cpu_seconds_total{
               mode!="idle",
-              role=~"gha-runner-scale-set-.*"
+              role=~"$%s"
             }
             [$__rate_interval]
           )
@@ -297,10 +297,10 @@ local prometheusQuery = g.query.prometheus;
         /
         count by (kubernetes_io_hostname) (
           node_cpu_seconds_total{
-            role=~"gha-runner-scale-set-.*"
+            role=~"$%s"
           }
         )
-      |||
+      ||| % [variables.node_role.name, variables.node_role.name]
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} - {{role}}'),
 
@@ -310,14 +310,14 @@ local prometheusQuery = g.query.prometheus;
       |||
         100 - (
           node_memory_MemFree_bytes{
-            role=~"gha-runner-scale-set-.*"
+            role=~"$%s"
           }
           /
           node_memory_MemTotal_bytes{
-            role=~"gha-runner-scale-set-.*"
+            role=~"$%s"
           }
         ) * 100
-      |||
+      ||| % [variables.node_role.name, variables.node_role.name]
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} - {{role}}'),
 
@@ -328,15 +328,15 @@ local prometheusQuery = g.query.prometheus;
         100 - (
           node_filesystem_avail_bytes{
             device!="shm",
-            role=~"gha-runner-scale-set-.*"
+            role=~"$%s"
           }
           /
           node_filesystem_size_bytes{
             device!="shm",
-            role=~"gha-runner-scale-set-.*"
+            role=~"$%s"
           }
         ) * 100
-      |||
+      ||| % [variables.node_role.name, variables.node_role.name]
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} ({{device}}) - {{role}}'),
 
@@ -346,11 +346,11 @@ local prometheusQuery = g.query.prometheus;
       |||
         irate(
           node_ethtool_bw_in_allowance_exceeded{
-            role=~"gha-runner-scale-set-.*"
+            role=~"$%s"
           }
           [$__rate_interval]
         )
-      |||
+      ||| % [variables.node_role.name]
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (in) - {{role}}'),
 
@@ -360,11 +360,11 @@ local prometheusQuery = g.query.prometheus;
       |||
         irate(
           node_ethtool_bw_out_allowance_exceeded{
-            role=~"gha-runner-scale-set-.*"
+            role=~"$%s"
           }
           [$__rate_interval]
         ) * -1
-      |||
+      ||| % [variables.node_role.name]
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (out) - {{role}}'),
 
@@ -374,11 +374,11 @@ local prometheusQuery = g.query.prometheus;
       |||
         irate(
           node_network_receive_bytes_total{
-            role=~"gha-runner-scale-set-.*"
+            role=~"$%s"
           }
           [$__rate_interval]
         )
-      |||
+      ||| % [variables.node_role.name]
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (RX) - {{role}}'),
 
@@ -388,11 +388,11 @@ local prometheusQuery = g.query.prometheus;
       |||
         irate(
           node_network_transmit_bytes_total{
-            role=~"gha-runner-scale-set-.*"
+            role=~"$%s"
           }
           [$__rate_interval]
         ) * -1
-      |||
+      ||| % [variables.node_role.name]
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (TX) - {{role}}'),
 }

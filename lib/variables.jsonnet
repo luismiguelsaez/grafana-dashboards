@@ -45,4 +45,15 @@ local var = g.dashboard.variable;
     + var.query.refresh.onLoad()
     + var.query.selectionOptions.withMulti()
     + var.query.selectionOptions.withIncludeAll(value=true, customAllValue='.*'),
+
+  node_role:
+    var.query.new('node_role')
+    + var.query.withDatasourceFromVariable(self.datasource)
+    + var.query.queryTypes.withLabelValues(
+      'role',
+      metric='node_boot_time_seconds{role!~""}',
+    )
+    + var.query.refresh.onLoad()
+    + var.query.selectionOptions.withMulti()
+    + var.query.selectionOptions.withIncludeAll(value=true, customAllValue='.*'),
 }

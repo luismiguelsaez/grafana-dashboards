@@ -36,7 +36,7 @@ g.dashboard.new('GHA runners grid')
       g.panel.row.new('Nodes resources'),
       panels.timeSeries.base('CPU Usage', [queries.nodeCPUUsage], 'percentunit'),
       panels.timeSeries.base('Memory Usage', [queries.nodeMemoryUsage], 'percentunit'),
-      panels.timeSeries.base('Disk Usage', [queries.nodeDiskUsage], 'percent'),
+      panels.timeSeries.base('Disk Usage', [queries.nodeDiskUsage], 'percentunit'),
       panels.timeSeries.base('Network Usage', [queries.nodeNetworkRX, queries.nodeNetworkTX], 'bytes'),
       panels.timeSeries.base('ENA BW Allowance', [queries.nodeENABWAllowanceOUT, queries.nodeENABWAllowanceIN], 'none'),
 

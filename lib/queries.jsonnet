@@ -316,7 +316,7 @@ local prometheusQuery = g.query.prometheus;
           node_memory_MemTotal_bytes{
             role=~"$%s"
           }
-        ) * 100
+        )
       ||| % [variables.node_role.name, variables.node_role.name]
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} - {{role}}'),
@@ -335,7 +335,7 @@ local prometheusQuery = g.query.prometheus;
             device!="shm",
             role=~"$%s"
           }
-        ) * 100
+        )
       ||| % [variables.node_role.name, variables.node_role.name]
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} ({{device}}) - {{role}}'),

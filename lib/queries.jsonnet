@@ -308,15 +308,13 @@ local prometheusQuery = g.query.prometheus;
     prometheusQuery.new(
       '$' + variables.datasource.name,
       |||
-        100 - (
-          node_memory_MemFree_bytes{
-            role=~"$%s"
-          }
-          /
-          node_memory_MemTotal_bytes{
-            role=~"$%s"
-          }
-        )
+        node_memory_MemFree_bytes{
+          role=~"$%s"
+        }
+        /
+        node_memory_MemTotal_bytes{
+          role=~"$%s"
+        }
       ||| % [variables.node_role.name, variables.node_role.name]
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} - {{role}}'),
@@ -325,17 +323,15 @@ local prometheusQuery = g.query.prometheus;
     prometheusQuery.new(
       '$' + variables.datasource.name,
       |||
-        100 - (
-          node_filesystem_avail_bytes{
-            device!="shm",
-            role=~"$%s"
-          }
-          /
-          node_filesystem_size_bytes{
-            device!="shm",
-            role=~"$%s"
-          }
-        )
+        node_filesystem_avail_bytes{
+          device!="shm",
+          role=~"$%s"
+        }
+        /
+        node_filesystem_size_bytes{
+          device!="shm",
+          role=~"$%s"
+        }
       ||| % [variables.node_role.name, variables.node_role.name]
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} ({{device}}) - {{role}}'),

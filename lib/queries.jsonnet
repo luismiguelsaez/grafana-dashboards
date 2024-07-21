@@ -391,4 +391,39 @@ local prometheusQuery = g.query.prometheus;
       ||| % [variables.node_role.name]
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (TX) - {{role}}'),
+
+  ghaRunnerListenerCount:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum (gha_controller_running_listeners)
+      |||
+    ),
+
+  ghaRunnerRunningCount:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum (gha_controller_running_ephemeral_runners) by (name)
+      |||
+    )
+    + prometheusQuery.withLegendFormat('{{name}} - running'),
+
+  ghaRunnerPendingCount:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum (gha_controller_pending_ephemeral_runners) by (name)
+      |||
+    )
+    + prometheusQuery.withLegendFormat('{{name}} - pending'),
+
+  ghaRunnerFailedCount:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum (gha_controller_failed_ephemeral_runners) by (name)
+      |||
+    )
+    + prometheusQuery.withLegendFormat('{{name}} - failed'),
 }

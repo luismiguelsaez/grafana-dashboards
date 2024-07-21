@@ -24,8 +24,16 @@ g.dashboard.new('GHA runners grid')
 ])
 + g.dashboard.withPanels(
   // Create panels grid
-  utilGrid.makeGrid(
+  utilGrid.wrapPanels(
     panels=[
+
+      g.panel.row.new('Runners status'),
+      panels.stat.base('Listeners', [queries.ghaRunnerListenerCount], 'none')
+      + g.panel.stat.gridPos.withW(4)
+      + g.panel.stat.gridPos.withH(6),
+      panels.timeSeries.base('Runners', [queries.ghaRunnerRunningCount, queries.ghaRunnerPendingCount, queries.ghaRunnerFailedCount], 'none')
+      + g.panel.stat.gridPos.withW(12)
+      + g.panel.stat.gridPos.withH(6),
 
       g.panel.row.new('Runners resources'),
       panels.timeSeries.base('CPU Usage', [queries.podCPUUsage], 'percentunit'),

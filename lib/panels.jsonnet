@@ -37,4 +37,14 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
       + g.panel.timeSeries.options.legend.withCalcs(['max', 'mean', 'min'])
       + g.panel.timeSeries.options.legend.withSortBy(['max']),
   },
+
+  stat: {
+    local stat = g.panel.stat,
+    local options = stat.options,
+
+    base(title, targets, unit):
+      stat.new(title)
+      + stat.queryOptions.withTargets(targets)
+      + stat.standardOptions.withUnit(unit),
+  },
 }

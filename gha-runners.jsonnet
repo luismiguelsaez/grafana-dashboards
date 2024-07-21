@@ -9,7 +9,7 @@ local panels = import './lib/panels.jsonnet';
 local queries = import './lib/queries.jsonnet';
 
 // Dashboard
-g.dashboard.new('GHA runners grid')
+g.dashboard.new('GHA runners')
 + g.dashboard.withDescription(|||
   Dashboard to monitor the resources usage and status
   of Github Actions Scale Set Runners

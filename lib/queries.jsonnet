@@ -281,6 +281,24 @@ local prometheusQuery = g.query.prometheus;
     )
     + prometheusQuery.withLegendFormat('{{pod}}'),
 
+  podOOMKills:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum(
+          sum_over_time(
+            container_oom_events_total{
+              namespace=~"$%s",
+              pod=~"$%s"
+            }
+            [8h]
+          )
+        )
+      ||| % [variables.namespace.name, variables.pod.name]
+    )
+    + prometheusQuery.withLegendFormat('{{pod}} @ {{container}}'),
+
+  // Kubernetes nodes
   nodeCPUUsage:
     prometheusQuery.new(
       '$' + variables.datasource.name,
@@ -392,6 +410,23 @@ local prometheusQuery = g.query.prometheus;
     )
     + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} (TX) - {{role}}'),
 
+  nodeOOMKills:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        sum(
+          sum_over_time(
+            node_vmstat_oom_kill{
+              role=~"$%s"
+            }
+            [8h]
+          )
+        )
+      ||| % [variables.node_role.name]
+    )
+    + prometheusQuery.withLegendFormat('{{kubernetes_io_hostname}} - {{role}}'),
+
+  // GHA Runners
   ghaRunnerListenerCount:
     prometheusQuery.new(
       '$' + variables.datasource.name,

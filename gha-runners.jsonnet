@@ -31,6 +31,12 @@ g.dashboard.new('GHA runners')
       panels.stat.base('Listeners', [queries.ghaRunnerListenerCount], 'none')
       + g.panel.stat.gridPos.withW(4)
       + g.panel.stat.gridPos.withH(6),
+      panels.stat.base('Runners OOM (8h)', [queries.podOOMKills], 'none')
+      + g.panel.stat.gridPos.withW(4)
+      + g.panel.stat.gridPos.withH(6),
+      panels.stat.base('Nodes OOM (8h)', [queries.nodeOOMKills], 'none')
+      + g.panel.stat.gridPos.withW(4)
+      + g.panel.stat.gridPos.withH(6),
       panels.timeSeries.base('Runners', [queries.ghaRunnerRunningCount, queries.ghaRunnerPendingCount, queries.ghaRunnerFailedCount], 'none')
       + g.panel.stat.gridPos.withW(12)
       + g.panel.stat.gridPos.withH(6),

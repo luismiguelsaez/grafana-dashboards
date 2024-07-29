@@ -43,7 +43,7 @@ g.dashboard.new('GHA runners')
 
       g.panel.row.new('Runners resources'),
       panels.timeSeries.base('CPU Usage', [queries.podCPUUsage], 'percentunit'),
-      panels.timeSeries.base('Memory Usage', [queries.podMemoryUsage], 'percentunit'),
+      panels.timeSeries.base('Memory Usage', [queries.podMemoryUsage, queries.podMemoryUsageAbs], 'percentunit'),
       panels.timeSeries.base('CPU Trottling', [queries.podCPUThrottling], 'percentunit'),
       panels.timeSeries.base('Network Usage', [queries.podNetworkRX, queries.podNetworkTX], 'bytes'),
 

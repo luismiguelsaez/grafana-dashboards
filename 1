@@ -41,8 +41,8 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
       self.base(title, targets, unit)
       + timeSeries.standardOptions.override.byQuery.new('B')
       + timeSeries.standardOptions.override.byQuery.withPropertiesFromOptions(
-        timeSeries.standardOptions.withUnit('bytes')
-        + timeSeries.fieldConfig.defaults.custom.withAxisPlacement('right')
+        g.panel.standardOptions.withUnit('bytes')
+        + g.panel.fieldConfig.defaults.custom.withAxisPlacement('right')
       ),
   },
 

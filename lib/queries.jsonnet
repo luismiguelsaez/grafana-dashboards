@@ -124,6 +124,21 @@ local prometheusQuery = g.query.prometheus;
     )
     + prometheusQuery.withLegendFormat('{{container}} @ {{pod}}'),
 
+  podMemoryUsageAbs:
+    prometheusQuery.new(
+      '$' + variables.datasource.name,
+      |||
+        max by (container, pod) (
+          container_memory_usage_bytes{
+              namespace=~"$%s",
+              pod=~"$%s",
+              container!=""
+          }
+        )
+      ||| % [variables.namespace.name, variables.pod.name]
+    )
+    + prometheusQuery.withLegendFormat('{{container}} @ {{pod}}'),
+
   podMemoryUsage:
     prometheusQuery.new(
       '$' + variables.datasource.name,

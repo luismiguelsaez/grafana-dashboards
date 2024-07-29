@@ -36,6 +36,12 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
       + g.panel.timeSeries.options.legend.withPlacement('right')
       + g.panel.timeSeries.options.legend.withCalcs(['max', 'mean', 'min'])
       + g.panel.timeSeries.options.legend.withSortBy(['max']),
+
+    overrideQueryBytes(title, targets, unit):
+      self.base(title, targets, unit)
+      + g.panel.timeSeries.standardOptions.override.byQuery.new('B')
+      + g.panel.timeSeries.standardOptions.withUnit('bytes')
+      + g.panel.timeSeries.fieldConfig.defaults.custom.withAxisPlacement('right'),
   },
 
   stat: {

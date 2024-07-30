@@ -19,7 +19,7 @@ local var = g.dashboard.variable;
       'namespace',
       metric='kube_pod_info',
     )
-    + var.query.refresh.onLoad()
+    + var.query.refresh.onTime()
     + var.query.selectionOptions.withMulti()
     + var.query.selectionOptions.withIncludeAll(value=true, customAllValue='.*'),
 
@@ -31,7 +31,7 @@ local var = g.dashboard.variable;
       metric='kube_pod_info{namespace=~"$%s"}' % [self.namespace.name],
     )
     + var.query.withSort(i=0, type='alphabetical', asc=true)
-    + var.query.refresh.onLoad()
+    + var.query.refresh.onTime()
     + var.query.selectionOptions.withMulti()
     + var.query.selectionOptions.withIncludeAll(value=true, customAllValue='.*'),
 
@@ -42,7 +42,7 @@ local var = g.dashboard.variable;
       'envoy_cluster_name',
       metric='envoy_cluster_external_upstream_rq{envoy_cluster_name!~"admin_port_cluster"}',
     )
-    + var.query.refresh.onLoad()
+    + var.query.refresh.onTime()
     + var.query.selectionOptions.withMulti()
     + var.query.selectionOptions.withIncludeAll(value=true, customAllValue='.*'),
 
@@ -53,7 +53,7 @@ local var = g.dashboard.variable;
       'role',
       metric='node_boot_time_seconds{role!~""}',
     )
-    + var.query.refresh.onLoad()
+    + var.query.refresh.onTime()
     + var.query.selectionOptions.withMulti()
     + var.query.selectionOptions.withIncludeAll(value=true, customAllValue='.*'),
 }

@@ -39,11 +39,49 @@ local g = import 'github.com/grafana/grafonnet/gen/grafonnet-latest/main.libsonn
 
     overrideQueryBytes(title, targets, unit):
       self.base(title, targets, unit)
-      + timeSeries.standardOptions.override.byQuery.new('B')
-      + timeSeries.standardOptions.override.byQuery.withPropertiesFromOptions(
-        timeSeries.standardOptions.withUnit('bytes')
-        + timeSeries.fieldConfig.defaults.custom.withAxisPlacement('right')
-      ),
+      + {
+        fieldConfig: {
+          overrides: [
+            {
+              matcher: {
+                id: 'byFrameRefID',
+                options: 'A',
+              },
+              properties: [
+                {
+                  id: 'custom.axisPlacement',
+                  value: 'left',
+                },
+                {
+                  id: 'unit',
+                  value: 'percentunit',
+                },
+              ],
+            },
+            {
+              matcher: {
+                id: 'byFrameRefID',
+                options: 'B',
+              },
+              properties: [
+                {
+                  id: 'custom.axisPlacement',
+                  value: 'right',
+                },
+                {
+                  id: 'unit',
+                  value: 'bytes',
+                },
+              ],
+            },
+          ],
+        },
+      },
+    //+ timeSeries.standardOptions.override.byQuery.new('B')
+    //  + timeSeries.standardOptions.override.byQuery.withPropertiesFromOptions(
+    //    timeSeries.standardOptions.withUnit('bytes')
+    //    + timeSeries.fieldConfig.defaults.custom.withAxisPlacement('right')
+    //  ),
   },
 
   stat: {

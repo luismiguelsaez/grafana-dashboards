@@ -1,0 +1,12 @@
+k9s:
+  cluster: arn:aws:eks:us-east-2:447542674857:cluster/dev2-WAd5LEa6
+  namespace:
+    active: gloo-system
+    lockFavorites: false
+    favorites:
+    - default
+  view:
+    active: po
+  featureGates:
+    nodeShell: false
+  portForwardAddress: localhost

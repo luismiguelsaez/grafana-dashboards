@@ -34,7 +34,7 @@ g.dashboard.new('Gloo Applications')
 
       g.panel.row.new('Resources'),
       panels.timeSeries.base('CPU Usage', [queries.podCPUUsage], 'percentunit'),
-      panels.timeSeries.base('Memory Usage', [queries.podMemoryUsage], 'percentunit'),
+      panels.timeSeries.overrideQueryBytes('Memory Usage', [queries.podMemoryUsage, queries.podMemoryUsageAbs], 'percentunit'),
       panels.timeSeries.base('Disk Usage', [queries.podFSRead, queries.podFSWrite], 'bytes'),
       panels.timeSeries.base('Network Usage', [queries.podNetworkRX, queries.podNetworkTX], 'bytes'),
       panels.timeSeries.base('Opened Sockets', [queries.podSockets], 'none'),
